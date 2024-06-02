@@ -28,6 +28,12 @@ public class SeckillUserServiceImpl implements SeckillUserService {
     private RedisService redisService;
 
     @Override
+    public SeckillUser getSeckillUserByUserId(Long userId) {
+        String key = SeckillConstants.getKey(SeckillConstants.USER_KEY_PREFIX, String.valueOf(userId));
+        return (SeckillUser) redisService.get(key);
+    }
+
+    @Override
     public SeckillUser getSeckillUserByUserName(String userName) {
         return seckillUserRepository.getSeckillUserByUserName(userName);
     }
