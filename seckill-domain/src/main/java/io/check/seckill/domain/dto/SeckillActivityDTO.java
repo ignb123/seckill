@@ -1,5 +1,6 @@
 package io.check.seckill.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -16,10 +17,12 @@ public class SeckillActivityDTO implements Serializable {
 
     //活动开始时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
     private Date startTime;
 
     //活动结束时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
     private Date endTime;
 
     //活动状态 0：已发布； 1：上线； -1：下线

@@ -2,7 +2,7 @@ var g_host="localhost:8080";
 
 var common_localstorage_key = "common_localstorage_key";
 
-var base_image_url = "http://localhost:9000/seckill"
+var base_image_url = "http://localhost:10000/seckill"
 
 function currentTime(){
     var time = new Date();
