@@ -32,7 +32,7 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <mainClass>io.binghe.seckill.starter.SeckillStarter</mainClass>
+                            <mainClass>io.check.seckill.starter.SeckillStarter</mainClass>
                         </configuration>
                     </execution>
                 </executions>

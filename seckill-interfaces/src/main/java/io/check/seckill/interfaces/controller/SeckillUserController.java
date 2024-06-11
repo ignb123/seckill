@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.*;
  *                       设置为"*"表示允许所有来源的请求。
  */
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*", originPatterns = "*")
-
 public class SeckillUserController {
 
     @Autowired
