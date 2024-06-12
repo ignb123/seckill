@@ -7,9 +7,14 @@
         <groupId>io.check.seckill</groupId>
         <artifactId>seckill</artifactId>
         <version>1.0-SNAPSHOT</version>
+
     </parent>
 
     <artifactId>seckill-infrastructure</artifactId>
+
+    <properties>
+        <protostuff.version>1.7.4</protostuff.version>
+    </properties>
 
 
     <dependencies>
@@ -18,6 +23,18 @@
             <artifactId>seckill-domain</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.protostuff</groupId>
+            <artifactId>protostuff-runtime</artifactId>
+            <version>${protostuff.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.protostuff</groupId>
+            <artifactId>protostuff-core</artifactId>
+            <version>${protostuff.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>
