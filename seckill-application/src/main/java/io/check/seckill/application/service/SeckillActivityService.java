@@ -1,5 +1,6 @@
 package io.check.seckill.application.service;
 
+import io.check.seckill.application.command.SeckillActivityCommand;
 import io.check.seckill.domain.dto.SeckillActivityDTO;
 import io.check.seckill.domain.model.SeckillActivity;
 
@@ -11,7 +12,7 @@ public interface SeckillActivityService {
     /**
      * 保存活动信息
      */
-    void saveSeckillActivityDTO(SeckillActivityDTO seckillActivityDTO);
+    void saveSeckillActivity(SeckillActivityCommand seckillActivityCommand);
 
     /**
      * 根据状态获取活动列表
@@ -32,4 +33,14 @@ public interface SeckillActivityService {
      * 修改状态
      */
     int updateStatus(Integer status, Long id);
+
+    /**
+     * 活动列表
+     */
+    List<SeckillActivityDTO> getSeckillActivityList(Integer status, Long version);
+
+    /**
+     * 获取活动信息，带有缓存
+     */
+    SeckillActivityDTO getSeckillActivity(Long id, Long version);
 }

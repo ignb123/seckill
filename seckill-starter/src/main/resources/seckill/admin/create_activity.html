@@ -1,6 +1,6 @@
 <html>
 <head>
-    <meta charSet="UTF-8">
+    <meta charset="UTF-8">
     <link href="../static/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="../static/assets/global/css/components.css" rel="stylesheet" type="text/css"/>
     <link href="../static/assets/admin/pages/css/login.css" rel="stylesheet" type="text/css"/>
@@ -8,35 +8,35 @@
     <script src="../js/common.js" type="text/javascript"></script>
 </head>
 
-<body className="login">
-<div className="content">
-    <h3 className="form-title">添加活动</h3>
-    <div className="form-group">
-        <label className="control-label">活动名称</label>
+<body class="login">
+<div class="content">
+    <h3 class="form-title">添加活动</h3>
+    <div class="form-group">
+        <label class="control-label">活动名称</label>
         <div>
-            <input className="form-control" type="text" name="activityName" id="activityName"/>
+            <input class="form-control" type="text" name="activityName" id="activityName"/>
         </div>
     </div>
-    <div className="form-group">
-        <label className="control-label">开始时间</label>
+    <div class="form-group">
+        <label class="control-label">开始时间</label>
         <div>
-            <input className="form-control" type="datetime-local" name="startTime" id="startTime"/>
+            <input class="form-control" type="datetime-local" name="startTime" id="startTime"/>
         </div>
     </div>
-    <div className="form-group">
-        <label className="control-label">结束时间</label>
+    <div class="form-group">
+        <label class="control-label">结束时间</label>
         <div>
-            <input className="form-control" type="datetime-local" name="endTime" id="endTime"/>
+            <input class="form-control" type="datetime-local" name="endTime" id="endTime"/>
         </div>
     </div>
-    <div className="form-group">
-        <label className="control-label">活动描述</label>
+    <div class="form-group">
+        <label class="control-label">活动描述</label>
         <div>
-            <input className="form-control" type="text" name="activityDesc" id="activityDesc"/>
+            <input class="form-control" type="text" name="activityDesc" id="activityDesc"/>
         </div>
     </div>
-    <div className="form-actions">
-        <button className="btn blue" id="create" type="submit">
+    <div class="form-actions">
+        <button class="btn blue" id="create" type="submit">
             提交
         </button>
     </div>
@@ -71,18 +71,18 @@
             }
             endTime = dateFormat(endTime)
 
-            if (startTime >= endTime) {
+            if (startTime >= endTime){
                 alert("开始时间不能晚于结束时间");
                 return false;
             }
 
             var time = currentTime();
-            if (startTime < time) {
+            if (startTime < time){
                 alert("开始时间不能早于当前时间");
                 return false;
             }
 
-            if (endTime < time) {
+            if (endTime < time){
                 alert("结束时间不能早于当前时间");
                 return false;
             }
@@ -94,11 +94,11 @@
 
             $.ajax({
                 type: "POST",
-                headers: {
+                headers:{
                     "access-token": get(common_localstorage_key)
                 },
                 contentType: "application/json",
-                url: "http://" + g_host + "/activity/saveSeckillActivity",
+                url: "http://"+g_host+"/activity/saveSeckillActivity",
                 data: JSON.stringify({
                     "activityName": activityName,
                     "startTime": startTime,
@@ -109,11 +109,12 @@
                 success: function (data) {
                     if (data.code == "1001") {
                         alert("创建成功");
-                        window.location.href = "activity_list.html";
-                    } else if (data.code == 2012) {
+                        window.location.href="activity_list.html";
+                    } else if (data.code == 2012){
                         alert("请登录后操作")
                         window.location.href = "login.html";
-                    } else {
+                    }
+                    else {
                         alert("创建失败");
                     }
                 },

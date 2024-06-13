@@ -9,39 +9,38 @@
 </head>
 
 <body>
-<div class="content">
-	<h3 class="form-title">商品列表</h3>
-	<div class="table-responsive">
-		<table class="table">
-			<thead>
-			<tr>
-				<th>商品图片</th>
-				<th>商品编号</th>
-				<th>商品名称</th>
-				<th>活动编号</th>
-				<th>开始时间</th>
-				<th>结束时间</th>
-				<th>原价</th>
-				<th>秒杀价</th>
-				<th>初始库存</th>
-				<th>当前库存</th>
-				<th>限购个数</th>
-				<th>商品描述</th>
-				<th>状态</th>
-				<th>操作</th>
-			</tr>
-			</thead>
-			<tbody id="container">
-			</tbody>
-		</table>
+	<div class="content">
+		<h3 class="form-title">商品列表</h3>
+		<div class="table-responsive">
+			<table class="table">
+				<thead>
+				<tr>
+					<th>商品图片</th>
+					<th>商品编号</th>
+					<th>商品名称</th>
+					<th>活动编号</th>
+					<th>开始时间</th>
+					<th>结束时间</th>
+					<th>原价</th>
+					<th>秒杀价</th>
+					<th>初始库存</th>
+					<th>当前库存</th>
+					<th>限购个数</th>
+					<th>商品描述</th>
+					<th>状态</th>
+					<th>操作</th>
+				</tr>
+				</thead>
+				<tbody id="container">
+				</tbody>
+			</table>
+		</div>
 	</div>
-</div>
-
 </body>
 
 <script>
 	// 定义全局活动数组信息
-	var g_activityList = [];
+	var g_goodsList = [];
 
 	jQuery(document).ready(function () {
 		var activityId = getParameterByName("activityId");
@@ -50,11 +49,11 @@
 			headers:{
 				"access-token": get(common_localstorage_key)
 			},
-			url:"http://"+g_host+"/goods/getSeckillGoodsByActivityId?activityId=" + String(BigInt(activityId)),
+			url:"http://"+g_host+"/goods/getSeckillGoodsByActivityId?activityId=" + activityId,
 			xhrFields: {withCredentials: true},
 			success:function (data) {
 				if (data.code == 1001) {
-					g_activityList = data.data;
+					g_goodsList = data.data;
 					reloadDom();
 				}else if (data.code == 2012){
 					alert("请登录后操作");
@@ -72,8 +71,8 @@
 	})
 
 	function reloadDom() {
-		for (var i = 0; i < g_activityList.length; i ++){
-			var itemVO = g_activityList[i];
+		for (var i = 0; i < g_goodsList.length; i ++){
+			var itemVO = g_goodsList[i];
 			var dom = "<tr id='goodsDetail"+ itemVO.id +"'>" +
 					"<td><img style='width: 100px;height: auto' src='"+ getImageUrl(itemVO.imgUrl) +"'></td>" +
 					"<td>"+ itemVO.id +"</td>" +
@@ -99,17 +98,16 @@
 		if (itemVO.status == 1){
 			innerHtml += "<input type='button' data-id='"+ itemVO.id +"' " +
 					"data-start-time='"+ itemVO.startTime +"' " +
-					"data-end-time='"+ itemVO.endTime +"' value='抢购' onclick='submitOrder(this)'/>"
+					"data-end-time='"+ itemVO.endTime +"' value='抢购' onclick='submitGoods(this)'/>"
 		}else{
 			innerHtml += "<input disabled='disabled' type='button' data-id='"+ itemVO.id +"' " +
 					"data-start-time='"+ itemVO.startTime +"' " +
-					"data-end-time='"+ itemVO.endTime +"' value='抢购' onclick='submitOrder(this)'/>"
+					"data-end-time='"+ itemVO.endTime +"' value='抢购' onclick='submitGoods(this)'/>"
 		}
 		return innerHtml;
 	}
 
-	//下单
-	function submitOrder(data){
+	function submitGoods(data){
 		var id = $(data).attr("data-id");
 		var startTime = $(data).attr("data-start-time");
 		var endTime = $(data).attr("data-end-time");
@@ -124,7 +122,7 @@
 			alert("秒杀活动已经结束，不能抢购");
 			return false;
 		}
-		window.location.href = "create_order.html?goodsId=" + String(BigInt(id));
+		window.location.href = "create_order.html?goodsId=" + id;
 	}
 
 	function getStatus(status){

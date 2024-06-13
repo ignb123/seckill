@@ -42,7 +42,7 @@
 
 <script>
 	// 定义全局活动数组信息
-	var g_activityList = [];
+	var g_goodsList = [];
 
 	jQuery(document).ready(function () {
 		showGoodsList();
@@ -55,11 +55,11 @@
 			headers:{
 				"access-token": get(common_localstorage_key)
 			},
-			url:"http://"+g_host+"/goods/getSeckillGoodsByActivityId?activityId=" + String(BigInt(activityId)),
+			url:"http://"+g_host+"/goods/getSeckillGoodsByActivityId?activityId=" + activityId,
 			xhrFields: {withCredentials: true},
 			success:function (data) {
 				if (data.code == 1001) {
-					g_activityList = data.data;
+					g_goodsList = data.data;
 					reloadDom();
 				}else if (data.code == 2012){
 					alert("请登录后操作");
@@ -78,8 +78,8 @@
 
 	function reloadDom() {
 		$("#container").html('')
-		for (var i = 0; i < g_activityList.length; i ++){
-			var itemVO = g_activityList[i];
+		for (var i = 0; i < g_goodsList.length; i ++){
+			var itemVO = g_goodsList[i];
 			var dom = "<tr id='goodsDetail"+ itemVO.id +"'>" +
 					"<td><img style='width: 100px;height: auto' src='"+ getImageUrl(itemVO.imgUrl) +"'></td>" +
 					"<td>"+ itemVO.id +"</td>" +
@@ -122,7 +122,7 @@
 			headers:{
 				"access-token": get(common_localstorage_key)
 			},
-			data: { "status": 1, "id": String(BigInt(activityId))},
+			data: { "status": 1, "id": activityId},
 			url:"http://"+g_host+"/goods/updateStatus",
 			xhrFields: {withCredentials: true},
 			success:function (data) {
@@ -149,7 +149,7 @@
 			headers:{
 				"access-token": get(common_localstorage_key)
 			},
-			data: { "status": -1, "id": String(BigInt(activityId))},
+			data: { "status": -1, "id": activityId},
 			url:"http://"+g_host+"/goods/updateStatus",
 			xhrFields: {withCredentials: true},
 			success:function (data) {

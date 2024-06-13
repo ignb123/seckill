@@ -9,65 +9,63 @@
 </head>
 
 <body class="login">
-<div class="content">
-    <h3 class="form-title">抢购</h3>
-    <div class="form-group">
-        <label class="control-label">商品名称</label>
-        <div>
-            <input class="form-control" type="text" disabled="disabled" name="goodsName" id="goodsName"/>
+    <div class="content">
+        <h3 class="form-title">抢购</h3>
+        <div class="form-group">
+            <label class="control-label">商品名称</label>
+            <div>
+                <input class="form-control" type="text" disabled="disabled" name="goodsName" id="goodsName"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">商品原价</label>
+            <div>
+                <input class="form-control" type="text" disabled="disabled"  name="originalPrice" id="originalPrice"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">商品秒杀价</label>
+            <div>
+                <input class="form-control" type="text" disabled="disabled"  name="activityPrice" id="activityPrice"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">当前库存</label>
+            <div>
+                <input class="form-control" type="text" disabled="disabled"  name="availableStock" id="availableStock"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">限购个数</label>
+            <div>
+                <input class="form-control" type="text" disabled="disabled"  name="limitNum" id="limitNum"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">商品描述</label>
+            <div>
+                <input class="form-control" type="text" disabled="disabled"  name="description" id="description"/>
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            <label class="control-label">购买数量</label>
+            <div>
+                <input class="form-control" type="text" name="quantity" id="quantity"/>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn blue" id="create" type="submit">
+                下单
+            </button>
         </div>
     </div>
-    <div class="form-group">
-        <label class="control-label">商品原价</label>
-        <div>
-            <input class="form-control" type="text" disabled="disabled"  name="originalPrice" id="originalPrice"/>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="control-label">商品秒杀价</label>
-        <div>
-            <input class="form-control" type="text" disabled="disabled"  name="activityPrice" id="activityPrice"/>
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label">当前库存</label>
-        <div>
-            <input class="form-control" type="text" disabled="disabled"  name="availableStock" id="availableStock"/>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="control-label">限购个数</label>
-        <div>
-            <input class="form-control" type="text" disabled="disabled"  name="limitNum" id="limitNum"/>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="control-label">商品描述</label>
-        <div>
-            <input class="form-control" type="text" disabled="disabled"  name="description" id="description"/>
-        </div>
-    </div>
-
-
-
-    <div class="form-group">
-        <label class="control-label">购买数量</label>
-        <div>
-            <input class="form-control" type="text" name="quantity" id="quantity"/>
-        </div>
-    </div>
-
-    <div class="form-actions">
-        <button class="btn blue" id="create" type="submit">
-            下单
-        </button>
-    </div>
-</div>
-
-
 </body>
 
 
@@ -81,7 +79,7 @@
             headers:{
                 "access-token": get(common_localstorage_key)
             },
-            url:"http://"+g_host+"/goods/getSeckillGoodsId?id=" + String(BigInt(goodsId)),
+            url:"http://"+g_host+"/goods/getSeckillGoodsId?id=" + goodsId,
             xhrFields: {withCredentials: true},
             success:function (data) {
                 if (data.code == 1001) {
@@ -126,7 +124,7 @@
                 return false;
             }
             if (quantity <= 0){
-                alert("输入的购买数量必须大于0");
+                alert("购买数量不能小于或者等于0");
                 return false;
             }
             if (quantity > limitNum){
@@ -143,11 +141,11 @@
                 url: "http://"+g_host+"/order/saveSeckillOrder",
                 data: {
                     "userId": userId,
-                    "goodsId": String(BigInt(goodsId)),
+                    "goodsId": goodsId,
                     "goodsName": goodsName,
                     "activityPrice": activityPrice,
                     "quantity": quantity,
-                    "activityId": String(BigInt(activityId))
+                    "activityId": activityId
                 },
                 xhrFields: {withCredentials: true},
                 success: function (data) {
@@ -159,7 +157,7 @@
                         window.location.href = "login.html";
                     }else if (data.code == 2014){
                         alert("商品已下线");
-                        window.location.href = "goods_list.html?activityId=" + String(BigInt(activityId));
+                        window.location.href = "goods_list.html?activityId=" + activityId;
                     }
                     else {
                         alert("创建失败：" + data.data);

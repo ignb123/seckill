@@ -94,18 +94,16 @@
 		}else if (itemVO.status == 1){
 			innerHtml += "<input type='button' data-id='"+ itemVO.id +"' data-start-time='"+ itemVO.startTime +"' data-end-time='"+ itemVO.endTime +"' value='发布商品' onclick='submitGoods(this)'/>" +
 					"<input type='button' value='查看商品' onclick='getGoods(" + itemVO.id + ")'/>" +
-					"<input type='button' value='下线' onclick='offlineActivity(" + itemVO.id + ")'/> ";
+					"<input type='button' value='下线' onclick='offlineActivity(" + itemVO.id + ")'/>";
 		}else {
 			innerHtml += "<input type='button' value='查看商品' onclick='getGoods(" + itemVO.id + ")'/>"
-
 		}
 		innerHtml +=  "<input type='button' value='查看订单' onclick='getOrders(" + itemVO.id + ")'/>";
 		return innerHtml;
 	}
 
-
 	function getOrders(activityId){
-		window.location.href = "order_list.html?activityId=" +  String(BigInt(activityId));
+		window.location.href = "order_list.html?activityId=" + activityId;
 	}
 
 	//上线活动
@@ -115,7 +113,7 @@
 			headers:{
 				"access-token": get(common_localstorage_key)
 			},
-			data: { "status": 1, "id": String(BigInt(activityId))},
+			data: { "status": 1, "id": activityId},
 			url:"http://"+g_host+"/activity/updateStatus",
 			xhrFields: {withCredentials: true},
 			success:function (data) {
@@ -142,7 +140,7 @@
 			headers:{
 				"access-token": get(common_localstorage_key)
 			},
-			data: { "status": -1, "id": String(BigInt(activityId))},
+			data: { "status": -1, "id": activityId},
 			url:"http://"+g_host+"/activity/updateStatus",
 			xhrFields: {withCredentials: true},
 			success:function (data) {
@@ -165,7 +163,7 @@
 
 	//查看商品
 	function getGoods(activityId){
-		window.location.href="goods_list.html?activityId=" + String(BigInt(activityId));
+		window.location.href="goods_list.html?activityId=" + activityId;
 	}
 	//添加商品
 	function submitGoods(data){
