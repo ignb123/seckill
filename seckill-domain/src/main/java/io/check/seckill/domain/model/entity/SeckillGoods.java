@@ -1,5 +1,6 @@
 package io.check.seckill.domain.model.entity;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -54,6 +55,26 @@ public class SeckillGoods implements Serializable {
 
     //秒杀状态 0：已发布； 1：上线； 2：下线
     private Integer status;
+
+    public boolean validateParams(){
+        if (StringUtils.isEmpty(goodsName)
+                || activityId == null
+                || startTime == null
+                || endTime == null
+                || startTime.after(endTime)
+                || endTime.before(new Date())
+                || activityPrice == null
+                || activityPrice.compareTo(BigDecimal.ZERO) < 0
+                || originalPrice == null
+                || originalPrice.compareTo(BigDecimal.ZERO) < 0
+                || initialStock == null
+                || initialStock <= 0
+                || limitNum == null
+                || limitNum <= 0){
+            return false;
+        }
+        return true;
+    }
 
     public Long getId() {
         return id;

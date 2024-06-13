@@ -11,8 +11,8 @@ import io.check.seckill.domain.model.enums.SeckillGoodsStatus;
 import io.check.seckill.domain.exception.SeckillException;
 import io.check.seckill.domain.model.entity.SeckillActivity;
 import io.check.seckill.domain.model.entity.SeckillGoods;
-import io.check.seckill.domain.repository.SeckillActivityRepository;
-import io.check.seckill.domain.repository.SeckillGoodsRepository;
+import io.check.seckill.domain.service.SeckillActivityDomainService;
+import io.check.seckill.domain.service.SeckillGoodsDomainService;
 import io.check.seckill.infrastructure.utils.beans.BeanUtil;
 import io.check.seckill.infrastructure.utils.id.SnowFlakeFactory;
 import io.check.seckill.infrastructure.utils.time.SystemClock;
@@ -31,9 +31,9 @@ import java.util.stream.Collectors;
 @Service
 public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     @Autowired
-    private SeckillGoodsRepository seckillGoodsRepository;
+    private SeckillGoodsDomainService seckillGoodsDomainService;
     @Autowired
-    private SeckillActivityRepository seckillActivityRepository;
+    private SeckillActivityDomainService seckillActivityDomainService;
 
     @Autowired
     private SeckillGoodsListCacheService seckillGoodsListCacheService;
@@ -42,11 +42,11 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     private SeckillGoodsCacheService seckillGoodsCacheService;
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int saveSeckillGoods(SeckillGoodsDTO seckillGoodsDTO) {
+    public void saveSeckillGoods(SeckillGoodsDTO seckillGoodsDTO) {
         if (seckillGoodsDTO == null){
             throw new SeckillException(HttpCode.PARAMS_INVALID);
         }
-        SeckillActivity seckillActivity = seckillActivityRepository
+        SeckillActivity seckillActivity = seckillActivityDomainService
                 .getSeckillActivityById(seckillGoodsDTO.getActivityId());
         if (seckillActivity == null){
             throw new SeckillException(HttpCode.ACTIVITY_NOT_EXISTS);
@@ -58,34 +58,34 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
         seckillGoods.setAvailableStock(seckillGoodsDTO.getInitialStock());
         seckillGoods.setId(SnowFlakeFactory.getSnowFlakeFromCache().nextId());
         seckillGoods.setStatus(SeckillGoodsStatus.PUBLISHED.getCode());
-        return seckillGoodsRepository.saveSeckillGoods(seckillGoods);
+        seckillGoodsDomainService.saveSeckillGoods(seckillGoods);
     }
 
     @Override
     public SeckillGoods getSeckillGoodsId(Long id) {
-        return seckillGoodsRepository.getSeckillGoodsId(id);
+        return seckillGoodsDomainService.getSeckillGoodsId(id);
     }
 
 
     @Override
     public List<SeckillGoods> getSeckillGoodsByActivityId(Long activityId) {
-        return seckillGoodsRepository.getSeckillGoodsByActivityId(activityId);
+        return seckillGoodsDomainService.getSeckillGoodsByActivityId(activityId);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateStatus(Integer status, Long id) {
-        return seckillGoodsRepository.updateStatus(status, id);
+    public void updateStatus(Integer status, Long id) {
+        seckillGoodsDomainService.updateStatus(status, id);
     }
 
     @Override
-    public int updateAvailableStock(Integer count, Long id) {
-        return seckillGoodsRepository.updateAvailableStock(count, id);
+    public void updateAvailableStock(Integer count, Long id) {
+        seckillGoodsDomainService.updateAvailableStock(count, id);
     }
 
     @Override
     public Integer getAvailableStockById(Long id) {
-        return seckillGoodsRepository.getAvailableStockById(id);
+        return seckillGoodsDomainService.getAvailableStockById(id);
     }
 
     @Override
@@ -110,6 +110,7 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
                     return seckillGoodsDTO;
                 })
                 .collect(Collectors.toList());
+
         return seckillActivityDTOList;
     }
 

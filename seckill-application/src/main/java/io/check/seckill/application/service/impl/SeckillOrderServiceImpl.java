@@ -10,6 +10,7 @@ import io.check.seckill.domain.exception.SeckillException;
 import io.check.seckill.domain.model.entity.SeckillGoods;
 import io.check.seckill.domain.model.entity.SeckillOrder;
 import io.check.seckill.domain.repository.SeckillOrderRepository;
+import io.check.seckill.domain.service.SeckillOrderDomainService;
 import io.check.seckill.infrastructure.utils.beans.BeanUtil;
 import io.check.seckill.infrastructure.utils.id.SnowFlakeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
     private SeckillGoodsService seckillGoodsService;
 
     @Autowired
-    private SeckillOrderRepository seckillOrderRepository;
+    private SeckillOrderDomainService seckillOrderDomainService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -76,10 +77,8 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
         seckillOrder.setOrderPrice(orderPrice);
         seckillOrder.setStatus(SeckillOrderStatus.CREATED.getCode());
         seckillOrder.setCreateTime(new Date());
-        // 保存秒杀订单
         //保存订单
-        seckillOrderRepository.saveSeckillOrder(seckillOrder);
-        // 更新秒杀商品的库存信息
+        seckillOrderDomainService.saveSeckillOrder(seckillOrder);
         //扣减库存
         seckillGoodsService.updateAvailableStock(seckillOrderDTO.getQuantity(),seckillOrderDTO.getGoodsId());
         return seckillOrder;
@@ -88,11 +87,11 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
 
     @Override
     public List<SeckillOrder> getSeckillOrderByUserId(Long userId) {
-        return seckillOrderRepository.getSeckillOrderByUserId(userId);
+        return seckillOrderDomainService.getSeckillOrderByUserId(userId);
     }
 
     @Override
     public List<SeckillOrder> getSeckillOrderByActivityId(Long activityId) {
-        return seckillOrderRepository.getSeckillOrderByActivityId(activityId);
+        return seckillOrderDomainService.getSeckillOrderByActivityId(activityId);
     }
 }

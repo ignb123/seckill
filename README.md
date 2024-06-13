@@ -6,3 +6,14 @@
 
 **缓存设计要注意的点**
 ![img.png](./images/img_3.png)
+
+**领域事件发布的流程**
+
+商品:
+![img.png](./images/img_4.png)
+
+订单:
+![img.png](./images/img_5.png)
+
+活动:
+![img.png](./images/img_6.png)
