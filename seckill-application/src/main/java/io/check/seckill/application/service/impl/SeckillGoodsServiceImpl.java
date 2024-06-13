@@ -6,11 +6,11 @@ import io.check.seckill.application.cache.service.goods.SeckillGoodsCacheService
 import io.check.seckill.application.cache.service.goods.SeckillGoodsListCacheService;
 import io.check.seckill.application.service.SeckillGoodsService;
 import io.check.seckill.domain.code.HttpCode;
-import io.check.seckill.domain.dto.SeckillGoodsDTO;
-import io.check.seckill.domain.enums.SeckillGoodsStatus;
+import io.check.seckill.domain.model.dto.SeckillGoodsDTO;
+import io.check.seckill.domain.model.enums.SeckillGoodsStatus;
 import io.check.seckill.domain.exception.SeckillException;
-import io.check.seckill.domain.model.SeckillActivity;
-import io.check.seckill.domain.model.SeckillGoods;
+import io.check.seckill.domain.model.entity.SeckillActivity;
+import io.check.seckill.domain.model.entity.SeckillGoods;
 import io.check.seckill.domain.repository.SeckillActivityRepository;
 import io.check.seckill.domain.repository.SeckillGoodsRepository;
 import io.check.seckill.infrastructure.utils.beans.BeanUtil;

@@ -1,4 +1,4 @@
-package io.check.seckill.domain.dto;
+package io.check.seckill.domain.model.dto;
 
 import java.io.Serializable;
 

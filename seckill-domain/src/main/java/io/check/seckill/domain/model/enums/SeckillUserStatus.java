@@ -1,4 +1,4 @@
-package io.check.seckill.domain.enums;
+package io.check.seckill.domain.model.enums;
 
 
 

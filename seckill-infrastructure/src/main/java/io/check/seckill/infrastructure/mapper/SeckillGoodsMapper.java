@@ -1,6 +1,6 @@
 package io.check.seckill.infrastructure.mapper;
 
-import io.check.seckill.domain.model.SeckillGoods;
+import io.check.seckill.domain.model.entity.SeckillGoods;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

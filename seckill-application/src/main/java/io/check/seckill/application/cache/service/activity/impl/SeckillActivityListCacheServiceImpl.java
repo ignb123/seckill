@@ -5,7 +5,7 @@ import io.check.seckill.application.builder.SeckillActivityBuilder;
 import io.check.seckill.application.cache.model.SeckillBusinessCache;
 import io.check.seckill.application.cache.service.activity.SeckillActivityListCacheService;
 import io.check.seckill.domain.constants.SeckillConstants;
-import io.check.seckill.domain.model.SeckillActivity;
+import io.check.seckill.domain.model.entity.SeckillActivity;
 import io.check.seckill.domain.repository.SeckillActivityRepository;
 import io.check.seckill.infrastructure.cache.distribute.DistributedCacheService;
 import io.check.seckill.infrastructure.cache.local.LocalCacheService;

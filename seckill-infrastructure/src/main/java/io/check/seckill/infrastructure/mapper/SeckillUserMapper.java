@@ -1,6 +1,6 @@
 package io.check.seckill.infrastructure.mapper;
 
-import io.check.seckill.domain.model.SeckillUser;
+import io.check.seckill.domain.model.entity.SeckillUser;
 import org.apache.ibatis.annotations.Param;
 
 /**

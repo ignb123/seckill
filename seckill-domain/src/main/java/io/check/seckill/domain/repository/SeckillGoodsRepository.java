@@ -1,6 +1,6 @@
 package io.check.seckill.domain.repository;
 
-import io.check.seckill.domain.model.SeckillGoods;
+import io.check.seckill.domain.model.entity.SeckillGoods;
 
 import java.util.List;
 

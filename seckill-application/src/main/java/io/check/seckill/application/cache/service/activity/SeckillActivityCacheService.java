@@ -1,8 +1,8 @@
 package io.check.seckill.application.cache.service.activity;
 
 import io.check.seckill.application.cache.model.SeckillBusinessCache;
-import io.check.seckill.application.service.common.SeckillCacheService;
-import io.check.seckill.domain.model.SeckillActivity;
+import io.check.seckill.application.cache.service.common.SeckillCacheService;
+import io.check.seckill.domain.model.entity.SeckillActivity;
 
 public interface SeckillActivityCacheService extends SeckillCacheService {
 

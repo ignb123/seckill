@@ -1,6 +1,6 @@
 package io.check.seckill.domain.repository;
 
-import io.check.seckill.domain.model.SeckillOrder;
+import io.check.seckill.domain.model.entity.SeckillOrder;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package io.check.seckill.infrastructure.repository;
 
-import io.check.seckill.domain.model.SeckillUser;
+import io.check.seckill.domain.model.entity.SeckillUser;
 import io.check.seckill.domain.repository.SeckillUserRepository;
 import io.check.seckill.infrastructure.mapper.SeckillUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package io.check.seckill.domain.repository;
 
-import io.check.seckill.domain.model.SeckillUser;
+import io.check.seckill.domain.model.entity.SeckillUser;
 
 /**
  * @author check

@@ -2,7 +2,7 @@ package io.check.seckill.infrastructure.repository;
 
 import io.check.seckill.domain.code.HttpCode;
 import io.check.seckill.domain.exception.SeckillException;
-import io.check.seckill.domain.model.SeckillActivity;
+import io.check.seckill.domain.model.entity.SeckillActivity;
 import io.check.seckill.domain.repository.SeckillActivityRepository;
 import io.check.seckill.infrastructure.mapper.SeckillActivityMapper;
 import org.springframework.beans.factory.annotation.Autowired;

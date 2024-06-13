@@ -1,8 +1,8 @@
 package io.check.seckill.application.cache.service.goods;
 
 import io.check.seckill.application.cache.model.SeckillBusinessCache;
-import io.check.seckill.application.service.common.SeckillCacheService;
-import io.check.seckill.domain.model.SeckillGoods;
+import io.check.seckill.application.cache.service.common.SeckillCacheService;
+import io.check.seckill.domain.model.entity.SeckillGoods;
 
 public interface SeckillGoodsCacheService extends SeckillCacheService {
 

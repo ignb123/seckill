@@ -1,4 +1,4 @@
-package io.check.seckill.application.service.common;
+package io.check.seckill.application.cache.service.common;
 
 public interface SeckillCacheService {
     String buildCacheKey(Object key);

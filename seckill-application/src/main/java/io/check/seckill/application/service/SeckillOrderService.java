@@ -1,7 +1,7 @@
 package io.check.seckill.application.service;
 
-import io.check.seckill.domain.dto.SeckillOrderDTO;
-import io.check.seckill.domain.model.SeckillOrder;
+import io.check.seckill.domain.model.dto.SeckillOrderDTO;
+import io.check.seckill.domain.model.entity.SeckillOrder;
 
 import java.util.List;
 

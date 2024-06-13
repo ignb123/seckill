@@ -7,17 +7,18 @@ import io.check.seckill.application.cache.service.activity.SeckillActivityListCa
 import io.check.seckill.application.command.SeckillActivityCommand;
 import io.check.seckill.application.service.SeckillActivityService;
 import io.check.seckill.domain.code.HttpCode;
-import io.check.seckill.domain.dto.SeckillActivityDTO;
-import io.check.seckill.domain.enums.SeckillActivityStatus;
+import io.check.seckill.domain.model.dto.SeckillActivityDTO;
+import io.check.seckill.domain.model.enums.SeckillActivityStatus;
 import io.check.seckill.domain.exception.SeckillException;
-import io.check.seckill.domain.model.SeckillActivity;
-import io.check.seckill.domain.repository.SeckillActivityRepository;
+import io.check.seckill.domain.model.entity.SeckillActivity;
+import io.check.seckill.domain.service.SeckillActivityDomainService;
 import io.check.seckill.infrastructure.utils.beans.BeanUtil;
 import io.check.seckill.infrastructure.utils.id.SnowFlakeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,13 +26,13 @@ import java.util.stream.Collectors;
 @Service
 public class SeckillActivityServiceImpl implements SeckillActivityService {
 
-    @Autowired
-    private SeckillActivityRepository seckillActivityRepository;
+    @Resource
+    private SeckillActivityDomainService seckillActivityDomainService;
 
-    @Autowired
+    @Resource
     private SeckillActivityListCacheService seckillActivityListCacheService;
 
-    @Autowired
+    @Resource
     private SeckillActivityCacheService seckillActivityCacheService;
 
 
@@ -45,24 +46,24 @@ public class SeckillActivityServiceImpl implements SeckillActivityService {
                 SeckillActivityBuilder.toSeckillActivity(seckillActivityCommand);
         seckillActivity.setId(SnowFlakeFactory.getSnowFlakeFromCache().nextId());
         seckillActivity.setStatus(SeckillActivityStatus.PUBLISHED.getCode());
-        seckillActivityRepository.saveSeckillActivity(seckillActivity);
+        seckillActivityDomainService.saveSeckillActivity(seckillActivity);
     }
 
     @Override
     public List<SeckillActivity> getSeckillActivityList(Integer status) {
-        return seckillActivityRepository.getSeckillActivityList(status);
+        return seckillActivityDomainService.getSeckillActivityList(status);
     }
     @Override
     public List<SeckillActivity> getSeckillActivityListBetweenStartTimeAndEndTime(Date currentTime, Integer status) {
-        return seckillActivityRepository.getSeckillActivityListBetweenStartTimeAndEndTime(currentTime, status);
+        return seckillActivityDomainService.getSeckillActivityListBetweenStartTimeAndEndTime(currentTime, status);
     }
     @Override
     public SeckillActivity getSeckillActivityById(Long id) {
-        return seckillActivityRepository.getSeckillActivityById(id);
+        return seckillActivityDomainService.getSeckillActivityById(id);
     }
     @Override
-    public int updateStatus(Integer status, Long id) {
-        return seckillActivityRepository.updateStatus(status, id);
+    public void updateStatus(Integer status, Long id) {
+        seckillActivityDomainService.updateStatus(status, id);
     }
 
     @Override

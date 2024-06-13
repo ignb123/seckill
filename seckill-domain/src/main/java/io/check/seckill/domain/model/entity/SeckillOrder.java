@@ -1,4 +1,4 @@
-package io.check.seckill.domain.model;
+package io.check.seckill.domain.model.entity;
 
 
 import org.springframework.format.annotation.DateTimeFormat;

@@ -5,7 +5,7 @@ import io.check.seckill.application.service.SeckillUserService;
 import io.check.seckill.domain.code.HttpCode;
 import io.check.seckill.domain.constants.SeckillConstants;
 import io.check.seckill.domain.exception.SeckillException;
-import io.check.seckill.domain.model.SeckillUser;
+import io.check.seckill.domain.model.entity.SeckillUser;
 import io.check.seckill.domain.repository.SeckillUserRepository;
 import io.check.seckill.infrastructure.shiro.utils.CommonsUtils;
 import io.check.seckill.infrastructure.shiro.utils.JwtUtils;

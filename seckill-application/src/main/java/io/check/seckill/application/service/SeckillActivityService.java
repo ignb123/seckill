@@ -1,8 +1,8 @@
 package io.check.seckill.application.service;
 
 import io.check.seckill.application.command.SeckillActivityCommand;
-import io.check.seckill.domain.dto.SeckillActivityDTO;
-import io.check.seckill.domain.model.SeckillActivity;
+import io.check.seckill.domain.model.dto.SeckillActivityDTO;
+import io.check.seckill.domain.model.entity.SeckillActivity;
 
 import java.util.Date;
 import java.util.List;
@@ -32,7 +32,7 @@ public interface SeckillActivityService {
     /**
      * 修改状态
      */
-    int updateStatus(Integer status, Long id);
+    void updateStatus(Integer status, Long id);
 
     /**
      * 活动列表

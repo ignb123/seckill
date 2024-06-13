@@ -2,8 +2,8 @@ package io.check.seckill.interfaces.controller;
 
 import io.check.seckill.application.service.SeckillGoodsService;
 import io.check.seckill.domain.code.HttpCode;
-import io.check.seckill.domain.dto.SeckillGoodsDTO;
-import io.check.seckill.domain.model.SeckillGoods;
+import io.check.seckill.domain.model.dto.SeckillGoodsDTO;
+import io.check.seckill.domain.model.entity.SeckillGoods;
 import io.check.seckill.domain.response.ResponseMessage;
 import io.check.seckill.domain.response.ResponseMessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;

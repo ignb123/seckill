@@ -1,24 +1,29 @@
-package io.check.seckill.domain.repository;
+package io.check.seckill.domain.service;
 
 import io.check.seckill.domain.model.entity.SeckillActivity;
 
 import java.util.Date;
 import java.util.List;
 
-public interface SeckillActivityRepository {
+/**
+ * @author check
+ * @version 1.0.0
+ * @description 活动领域层的服务接口
+ */
+public interface SeckillActivityDomainService {
 
     /**
      * 保存活动信息
      */
-    int saveSeckillActivity(SeckillActivity seckillActivity);
+    void saveSeckillActivity(SeckillActivity seckillActivity);
 
     /**
-     * 根据状态获取活动列表
+     * 活动列表
      */
     List<SeckillActivity> getSeckillActivityList(Integer status);
 
     /**
-     * 根据时间和状态获取活动列表
+     * 获取正在进行中的活动列表
      */
     List<SeckillActivity> getSeckillActivityListBetweenStartTimeAndEndTime(Date currentTime, Integer status);
 
@@ -30,5 +35,5 @@ public interface SeckillActivityRepository {
     /**
      * 修改状态
      */
-    int updateStatus(Integer status, Long id);
+    void updateStatus(Integer status, Long id);
 }

@@ -3,8 +3,8 @@ package io.check.seckill.interfaces.controller;
 
 import io.check.seckill.application.service.SeckillUserService;
 import io.check.seckill.domain.code.HttpCode;
-import io.check.seckill.domain.dto.SeckillUserDTO;
-import io.check.seckill.domain.model.SeckillUser;
+import io.check.seckill.domain.model.dto.SeckillUserDTO;
+import io.check.seckill.domain.model.entity.SeckillUser;
 import io.check.seckill.domain.response.ResponseMessage;
 import io.check.seckill.domain.response.ResponseMessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;

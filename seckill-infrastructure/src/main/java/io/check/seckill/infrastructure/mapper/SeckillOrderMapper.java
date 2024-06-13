@@ -1,7 +1,6 @@
 package io.check.seckill.infrastructure.mapper;
 
-import io.check.seckill.domain.model.SeckillOrder;
-import org.apache.ibatis.annotations.Mapper;
+import io.check.seckill.domain.model.entity.SeckillOrder;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
