@@ -59,6 +59,9 @@ public class SeckillGoodsDTO implements Serializable {
     //秒杀状态 0：已发布； 1：上线； -1：下线
     private Integer status;
 
+    //数据版本
+    private Long version;
+
     public Integer getLimitNum() {
         return limitNum;
     }
@@ -161,6 +164,14 @@ public class SeckillGoodsDTO implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }
 

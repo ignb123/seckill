@@ -37,12 +37,28 @@ public class SeckillGoodsController {
     }
 
     /**
+     * 获取商品详情(带缓存)
+     */
+    @RequestMapping(value = "/getSeckillGoods", method = {RequestMethod.GET,RequestMethod.POST})
+    public ResponseMessage<SeckillGoodsDTO> getSeckillGoods(Long id, Long version){
+        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), seckillGoodsService.getSeckillGoods(id, version));
+    }
+
+    /**
      * 获取商品列表
      */
     @RequestMapping(value = "/getSeckillGoodsByActivityId", method = {RequestMethod.GET,RequestMethod.POST})
     public ResponseMessage<List<SeckillGoods>> getSeckillGoodsByActivityId(Long activityId) {
         return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(),
                 seckillGoodsService.getSeckillGoodsByActivityId(activityId));
+    }
+
+    /**
+     * 获取商品列表(带缓存)
+     */
+    @RequestMapping(value = "/getSeckillGoodsList", method = {RequestMethod.GET,RequestMethod.POST})
+    public ResponseMessage<List<SeckillGoodsDTO>> getSeckillGoodsByActivityId(Long activityId, Long version){
+        return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode(), seckillGoodsService.getSeckillGoodsList(activityId, version));
     }
 
     /**
