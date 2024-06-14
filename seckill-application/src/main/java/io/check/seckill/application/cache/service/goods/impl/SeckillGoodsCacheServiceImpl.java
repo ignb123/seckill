@@ -7,6 +7,7 @@ import io.check.seckill.application.cache.service.goods.SeckillGoodsCacheService
 import io.check.seckill.domain.constants.SeckillConstants;
 import io.check.seckill.domain.model.entity.SeckillGoods;
 import io.check.seckill.domain.repository.SeckillGoodsRepository;
+import io.check.seckill.domain.service.SeckillGoodsDomainService;
 import io.check.seckill.infrastructure.cache.distribute.DistributedCacheService;
 import io.check.seckill.infrastructure.cache.local.LocalCacheService;
 import io.check.seckill.infrastructure.lock.DistributedLock;
@@ -15,6 +16,7 @@ import io.check.seckill.infrastructure.utils.string.StringUtil;
 import io.check.seckill.infrastructure.utils.time.SystemClock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -42,8 +44,8 @@ public class SeckillGoodsCacheServiceImpl implements SeckillGoodsCacheService {
     @Resource
     private DistributedLockFactory distributedLockFactory;
 
-    @Resource
-    private SeckillGoodsRepository seckillGoodsRepository;
+    @Autowired
+    private SeckillGoodsDomainService seckillGoodsDomainService;
 
     @Override
     public SeckillBusinessCache<SeckillGoods> getSeckillGoods(Long goodsId, Long version) {
@@ -79,7 +81,7 @@ public class SeckillGoodsCacheServiceImpl implements SeckillGoodsCacheService {
         //分布式缓存中没有数据
         if (seckillGoodsCache == null){
             // 尝试更新分布式缓存中的数据，注意的是只用一个线程去更新分布式缓存中的数据
-            seckillGoodsCache = tryUpdateSeckillGoodsCacheByLock(goodsId);
+            seckillGoodsCache = tryUpdateSeckillGoodsCacheByLock(goodsId,true);
         }
         //获取的数据不为空，并且不需要重试
         if(seckillGoodsCache != null && !seckillGoodsCache.isRetryLater()){
@@ -97,7 +99,7 @@ public class SeckillGoodsCacheServiceImpl implements SeckillGoodsCacheService {
     }
 
     @Override
-    public SeckillBusinessCache<SeckillGoods> tryUpdateSeckillGoodsCacheByLock(Long goodsId) {
+    public SeckillBusinessCache<SeckillGoods> tryUpdateSeckillGoodsCacheByLock(Long goodsId, boolean doubleCheck) {
         logger.info("SeckillGoodsCache|更新分布式缓存|{}", goodsId);
         //获取分布式锁，保证只有一个线程在更新分布式缓存
         DistributedLock lock = distributedLockFactory
@@ -108,13 +110,23 @@ public class SeckillGoodsCacheServiceImpl implements SeckillGoodsCacheService {
             if(!isSuccess){
                 return new SeckillBusinessCache<SeckillGoods>().notExist();
             }
-            SeckillGoods seckillGoods = seckillGoodsRepository.getSeckillGoodsId(goodsId);
             SeckillBusinessCache<SeckillGoods> seckillGoodsCache;
+            if(doubleCheck){
+                /**
+                 * 获取锁成功后，再次从缓存中获取数据，防止高并发下多个线程争抢锁的过程中，
+                 * 后续的线程再等待1秒的过程中，前面的线程释放了锁，后续的线程获取锁成功后再次更新分布式缓存数据
+                 */
+                seckillGoodsCache = SeckillGoodsBuilder.getSeckillBusinessCache(
+                        distributedCacheService.getObject(buildCacheKey(goodsId)), SeckillGoods.class);
+                if(seckillGoodsCache != null){
+                    return seckillGoodsCache;
+                }
+            }
+            SeckillGoods seckillGoods = seckillGoodsDomainService.getSeckillGoodsId(goodsId);
             if(seckillGoods == null){
                 seckillGoodsCache = new SeckillBusinessCache<SeckillGoods>().notExist();
-            }else {
-                seckillGoodsCache = new SeckillBusinessCache<SeckillGoods>()
-                        .with(seckillGoods)
+            }else{
+                seckillGoodsCache = new SeckillBusinessCache<SeckillGoods>().with(seckillGoods)
                         .withVersion(SystemClock.millisClock().now());
             }
             //将数据保存到分布式缓存

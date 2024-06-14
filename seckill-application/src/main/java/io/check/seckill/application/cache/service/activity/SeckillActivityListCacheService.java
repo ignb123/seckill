@@ -21,5 +21,5 @@ public interface SeckillActivityListCacheService extends SeckillCacheService {
      * @param status
      * @return
      */
-    SeckillBusinessCache<List<SeckillActivity>> tryUpdateSeckillActivityCacheByLock(Integer status);
+    SeckillBusinessCache<List<SeckillActivity>> tryUpdateSeckillActivityCacheByLock(Integer status, boolean doubleCheck);
 }

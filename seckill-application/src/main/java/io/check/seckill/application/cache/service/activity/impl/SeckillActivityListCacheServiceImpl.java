@@ -7,6 +7,7 @@ import io.check.seckill.application.cache.service.activity.SeckillActivityListCa
 import io.check.seckill.domain.constants.SeckillConstants;
 import io.check.seckill.domain.model.entity.SeckillActivity;
 import io.check.seckill.domain.repository.SeckillActivityRepository;
+import io.check.seckill.domain.service.SeckillActivityDomainService;
 import io.check.seckill.infrastructure.cache.distribute.DistributedCacheService;
 import io.check.seckill.infrastructure.cache.local.LocalCacheService;
 import io.check.seckill.infrastructure.lock.DistributedLock;
@@ -41,7 +42,7 @@ public class SeckillActivityListCacheServiceImpl implements SeckillActivityListC
     private DistributedCacheService distributedCacheService;
 
     @Autowired
-    private SeckillActivityRepository seckillActivityRepository;
+    private SeckillActivityDomainService seckillActivityDomainService;
 
     @Autowired
     private DistributedLockFactory distributedLockFactory;
@@ -77,7 +78,7 @@ public class SeckillActivityListCacheServiceImpl implements SeckillActivityListC
         SeckillBusinessCache<List<SeckillActivity>> seckillActivitiyListCache = SeckillActivityBuilder
                 .getSeckillBusinessCacheList(distributedCacheService.getObject(buildCacheKey(status)),  SeckillActivity.class);
         if (seckillActivitiyListCache == null){
-            seckillActivitiyListCache = tryUpdateSeckillActivityCacheByLock(status);
+            seckillActivitiyListCache = tryUpdateSeckillActivityCacheByLock(status,true);
         }
         if (seckillActivitiyListCache != null && !seckillActivitiyListCache.isRetryLater()){
             if (localCacheUpdatelock.tryLock()){
@@ -96,7 +97,7 @@ public class SeckillActivityListCacheServiceImpl implements SeckillActivityListC
      * 根据状态更新分布式缓存数据
      */
     @Override
-    public SeckillBusinessCache<List<SeckillActivity>> tryUpdateSeckillActivityCacheByLock(Integer status) {
+    public SeckillBusinessCache<List<SeckillActivity>> tryUpdateSeckillActivityCacheByLock(Integer status, boolean doubleCheck) {
         logger.info("SeckillActivitesCache|更新分布式缓存|{}", status);
         DistributedLock lock = distributedLockFactory.
                 getDistributedLock(SECKILL_ACTIVITES_UPDATE_CACHE_LOCK_KEY.concat(String.valueOf(status)));
@@ -105,13 +106,19 @@ public class SeckillActivityListCacheServiceImpl implements SeckillActivityListC
             if (!isLockSuccess){
                 return new SeckillBusinessCache<List<SeckillActivity>>().retryLater();
             }
-            List<SeckillActivity> seckillActivityList = seckillActivityRepository.getSeckillActivityList(status);
             SeckillBusinessCache<List<SeckillActivity>> seckillActivitiyListCache;
-            if (seckillActivityList == null) {
+            if (doubleCheck){
+                //获取锁成功后，再次从缓存中获取数据，防止高并发下多个线程争抢锁的过程中，后续的线程再等待1秒的过程中，前面的线程释放了锁，后续的线程获取锁成功后再次更新分布式缓存数据
+                seckillActivitiyListCache = SeckillActivityBuilder.getSeckillBusinessCacheList(distributedCacheService.getObject(buildCacheKey(status)), SeckillActivity.class);
+                if (seckillActivitiyListCache != null){
+                    return seckillActivitiyListCache;
+                }
+            }
+            List<SeckillActivity> seckillActivityList = seckillActivityDomainService.getSeckillActivityList(status);
+            if (seckillActivityList == null){
                 seckillActivitiyListCache = new SeckillBusinessCache<List<SeckillActivity>>().notExist();
             }else {
-                seckillActivitiyListCache = new SeckillBusinessCache<List<SeckillActivity>>()
-                        .with(seckillActivityList).withVersion(SystemClock .millisClock().now());
+                seckillActivitiyListCache = new SeckillBusinessCache<List<SeckillActivity>>().with(seckillActivityList).withVersion(SystemClock.millisClock().now());
             }
             distributedCacheService.put(buildCacheKey(status), JSON.toJSONString(seckillActivitiyListCache), SeckillConstants.FIVE_MINUTES);
             logger.info("SeckillActivitesCache|分布式缓存已经更新|{}", status);

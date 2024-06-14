@@ -1,6 +1,6 @@
 package io.check.seckill.application.service;
 
-
+import io.check.seckill.application.command.SeckillGoodsCommond;
 import io.check.seckill.domain.model.dto.SeckillGoodsDTO;
 import io.check.seckill.domain.model.entity.SeckillGoods;
 
@@ -16,7 +16,7 @@ public interface SeckillGoodsService {
     /**
      * 保存商品信息
      */
-    void saveSeckillGoods(SeckillGoodsDTO seckillGoodsDTO);
+    void saveSeckillGoods(SeckillGoodsCommond seckillGoodsCommond);
 
     /**
      * 根据id获取商品详细信息
@@ -36,7 +36,12 @@ public interface SeckillGoodsService {
     /**
      * 扣减库存
      */
-    void updateAvailableStock(Integer count, Long id);
+    boolean updateAvailableStock(Integer count, Long id);
+
+    /**
+     * 扣减数据库库存
+     */
+    boolean updateDbAvailableStock(Integer count, Long id);
 
     /**
      * 获取当前可用库存

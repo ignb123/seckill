@@ -7,6 +7,7 @@ import io.check.seckill.domain.constants.SeckillConstants;
 import io.check.seckill.domain.exception.SeckillException;
 import io.check.seckill.domain.model.entity.SeckillUser;
 import io.check.seckill.domain.repository.SeckillUserRepository;
+import io.check.seckill.infrastructure.cache.distribute.DistributedCacheService;
 import io.check.seckill.infrastructure.shiro.utils.CommonsUtils;
 import io.check.seckill.infrastructure.shiro.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,12 @@ public class SeckillUserServiceImpl implements SeckillUserService {
     private SeckillUserRepository seckillUserRepository;
 
     @Autowired
-    private RedisService redisService;
+    private DistributedCacheService distributedCacheService;
 
     @Override
     public SeckillUser getSeckillUserByUserId(Long userId) {
         String key = SeckillConstants.getKey(SeckillConstants.USER_KEY_PREFIX, String.valueOf(userId));
-        return (SeckillUser) redisService.get(key);
+        return distributedCacheService.getObject(key, SeckillUser.class);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class SeckillUserServiceImpl implements SeckillUserService {
         String key = SeckillConstants.getKey(
                 SeckillConstants.USER_KEY_PREFIX, String.valueOf(seckillUser.getId()));
         //缓存到Redis
-        redisService.set(key, seckillUser);
+        distributedCacheService.put(key, seckillUser);
         return token;
     }
 }

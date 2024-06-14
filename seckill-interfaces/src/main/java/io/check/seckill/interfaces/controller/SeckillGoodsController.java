@@ -1,5 +1,6 @@
 package io.check.seckill.interfaces.controller;
 
+import io.check.seckill.application.command.SeckillGoodsCommond;
 import io.check.seckill.application.service.SeckillGoodsService;
 import io.check.seckill.domain.code.HttpCode;
 import io.check.seckill.domain.model.dto.SeckillGoodsDTO;
@@ -23,8 +24,8 @@ public class SeckillGoodsController {
      * 保存秒杀商品
      */
     @RequestMapping(value = "/saveSeckillGoods", method = {RequestMethod.GET,RequestMethod.POST})
-    public ResponseMessage<String> saveSeckillActivityDTO(SeckillGoodsDTO seckillGoodsDTO){
-        seckillGoodsService.saveSeckillGoods(seckillGoodsDTO);
+    public ResponseMessage<String> saveSeckillGoods(SeckillGoodsCommond seckillGoodsCommond){
+        seckillGoodsService.saveSeckillGoods(seckillGoodsCommond);
         return ResponseMessageBuilder.build(HttpCode.SUCCESS.getCode());
     }
 

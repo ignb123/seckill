@@ -4,8 +4,10 @@ import io.check.seckill.application.builder.SeckillGoodsBuilder;
 import io.check.seckill.application.cache.model.SeckillBusinessCache;
 import io.check.seckill.application.cache.service.goods.SeckillGoodsCacheService;
 import io.check.seckill.application.cache.service.goods.SeckillGoodsListCacheService;
+import io.check.seckill.application.command.SeckillGoodsCommond;
 import io.check.seckill.application.service.SeckillGoodsService;
 import io.check.seckill.domain.code.HttpCode;
+import io.check.seckill.domain.constants.SeckillConstants;
 import io.check.seckill.domain.model.dto.SeckillGoodsDTO;
 import io.check.seckill.domain.model.enums.SeckillGoodsStatus;
 import io.check.seckill.domain.exception.SeckillException;
@@ -13,6 +15,7 @@ import io.check.seckill.domain.model.entity.SeckillActivity;
 import io.check.seckill.domain.model.entity.SeckillGoods;
 import io.check.seckill.domain.service.SeckillActivityDomainService;
 import io.check.seckill.domain.service.SeckillGoodsDomainService;
+import io.check.seckill.infrastructure.cache.distribute.DistributedCacheService;
 import io.check.seckill.infrastructure.utils.beans.BeanUtil;
 import io.check.seckill.infrastructure.utils.id.SnowFlakeFactory;
 import io.check.seckill.infrastructure.utils.time.SystemClock;
@@ -40,25 +43,39 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
 
     @Autowired
     private SeckillGoodsCacheService seckillGoodsCacheService;
+
+    @Autowired
+    private DistributedCacheService distributedCacheService;
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveSeckillGoods(SeckillGoodsDTO seckillGoodsDTO) {
-        if (seckillGoodsDTO == null){
+    public void saveSeckillGoods(SeckillGoodsCommond seckillGoodsCommond) {
+        if (seckillGoodsCommond == null){
             throw new SeckillException(HttpCode.PARAMS_INVALID);
         }
         SeckillActivity seckillActivity = seckillActivityDomainService
-                .getSeckillActivityById(seckillGoodsDTO.getActivityId());
+                .getSeckillActivityById(seckillGoodsCommond.getActivityId());
         if (seckillActivity == null){
             throw new SeckillException(HttpCode.ACTIVITY_NOT_EXISTS);
         }
-        SeckillGoods seckillGoods = new SeckillGoods();
-        BeanUtil.copyProperties(seckillGoodsDTO, seckillGoods);
+        SeckillGoods seckillGoods = SeckillGoodsBuilder.toSeckillGoods(seckillGoodsCommond);
         seckillGoods.setStartTime(seckillActivity.getStartTime());
         seckillGoods.setEndTime(seckillActivity.getEndTime());
-        seckillGoods.setAvailableStock(seckillGoodsDTO.getInitialStock());
+        seckillGoods.setAvailableStock(seckillGoodsCommond.getInitialStock());
         seckillGoods.setId(SnowFlakeFactory.getSnowFlakeFromCache().nextId());
         seckillGoods.setStatus(SeckillGoodsStatus.PUBLISHED.getCode());
-        seckillGoodsDomainService.saveSeckillGoods(seckillGoods);
+        //将商品的库存同步到Redis
+        String key = SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_STOCK_KEY_PREFIX,
+                String.valueOf(seckillGoods.getId()));
+        try {
+//            distributedCacheService.put(key, seckillGoods.getAvailableStock());
+            distributedCacheService.initByLua(key, seckillGoods.getAvailableStock());
+            seckillGoodsDomainService.saveSeckillGoods(seckillGoods);
+        }catch (Exception e){
+            if (distributedCacheService.hasKey(key)){
+                distributedCacheService.delete(key);
+            }
+            throw e;
+        }
     }
 
     @Override
@@ -75,12 +92,35 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateStatus(Integer status, Long id) {
+        if (status == SeckillGoodsStatus.OFFLINE.getCode()){
+            //清空缓存
+            this.clearCache(String.valueOf(id));
+        }
+
         seckillGoodsDomainService.updateStatus(status, id);
     }
 
+    /**
+     * 清空缓存的商品数据
+     */
+    private void clearCache(String id){
+        //清除缓存中的商品库存
+        distributedCacheService.delete(SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_STOCK_KEY_PREFIX, id));
+        //清除本地缓存中的商品
+        distributedCacheService.delete(SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_KEY_PREFIX, id));
+        //清除商品的限购信息
+        distributedCacheService.delete(SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_LIMIT_KEY_PREFIX, id));
+    }
+
+
     @Override
-    public void updateAvailableStock(Integer count, Long id) {
-        seckillGoodsDomainService.updateAvailableStock(count, id);
+    public boolean updateAvailableStock(Integer count, Long id) {
+        return seckillGoodsDomainService.updateAvailableStock(count, id);
+    }
+
+    @Override
+    public boolean updateDbAvailableStock(Integer count, Long id) {
+        return seckillGoodsDomainService.updateDbAvailableStock(count, id);
     }
 
     @Override
@@ -129,7 +169,7 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
             throw new SeckillException(HttpCode.RETRY_LATER);
         }
         SeckillGoodsDTO seckillGoodsDTO = SeckillGoodsBuilder.toSeckillGoodsDTO(seckillGoodsCache.getData());
-        seckillGoodsDTO.setVersion(SystemClock.millisClock().now());
+        seckillGoodsDTO.setVersion(seckillGoodsCache.getVersion());
         return seckillGoodsDTO;
     }
 }

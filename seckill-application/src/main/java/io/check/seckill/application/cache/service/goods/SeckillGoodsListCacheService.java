@@ -16,5 +16,5 @@ public interface SeckillGoodsListCacheService extends SeckillCacheService {
     /**
      * 尝试更新缓存数据
      */
-    SeckillBusinessCache<List<SeckillGoods>> tryUpdateSeckillGoodsCacheByLock(Long activityId);
+    SeckillBusinessCache<List<SeckillGoods>> tryUpdateSeckillGoodsCacheByLock(Long activityId, boolean doubleCheck);
 }

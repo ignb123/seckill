@@ -3,9 +3,54 @@ package io.check.seckill.domain.constants;
 public class SeckillConstants {
 
     /**
+     * LUA脚本商品库存不存在
+     */
+    public static final int LUA_RESULT_GOODS_STOCK_NOT_EXISTS = -1;
+
+    /**
+     * LUA脚本要扣减的商品数量小于等于0
+     */
+    public static final int LUA_RESULT_GOODS_STOCK_PARAMS_LT_ZERO = -2;
+
+    /**
+     * LUA脚本库存不足
+     */
+    public static final int LUA_RESULT_GOODS_STOCK_LT_ZERO = -3;
+
+    /**
+     * 商品key前缀
+     */
+    public static final String GOODS_ITEM_KEY_PREFIX = "item:";
+
+    /**
+     * 订单Key前缀
+     */
+    public static final String ORDER_KEY_PREFIX = "order:";
+
+    /**
+     * 订单锁
+     */
+    public static final String ORDER_LOCK_KEY_PREFIX = "order:lock:";
+
+    /**
+     * 商品库存的Key
+     */
+    public static final String GOODS_ITEM_STOCK_KEY_PREFIX = "item:stock:";
+
+    /**
+     * 商品限购数量Key
+     */
+    public static final String GOODS_ITEM_LIMIT_KEY_PREFIX = "item:limit:";
+
+    /**
+     * 商品上架标识
+     */
+    public static final String GOODS_ITEM_ONLINE_KEY_PREFIX = "item:onffline:";
+
+    /**
      * 用户缓存前缀
      */
-    public static final String USER_KEY_PREFIX = "user_";
+    public static final String USER_KEY_PREFIX = "user:";
 
     /**
      * 获取Key

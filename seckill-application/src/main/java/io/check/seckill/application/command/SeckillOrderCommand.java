@@ -1,15 +1,15 @@
-package io.check.seckill.domain.model.dto;
+package io.check.seckill.application.command;
 
 import java.io.Serializable;
 
-public class SeckillOrderDTO implements Serializable {
-    private static final long serialVersionUID = -3164396374622988886L;
+/**
+ * @author check
+ * @version 1.0.0
+ * @description 订单DTO
+ */
+public class SeckillOrderCommand implements Serializable {
 
-    //订单id
-    private Long id;
-
-    //用户id
-    private Long userId;
+    private static final long serialVersionUID = 2150071992328498340L;
 
     //商品id
     private Long goodsId;
@@ -20,25 +20,8 @@ public class SeckillOrderDTO implements Serializable {
     //活动id
     private Long activityId;
 
-    //版本号
+    //商品版本号
     private Long version;
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 
     public Long getGoodsId() {
         return goodsId;
