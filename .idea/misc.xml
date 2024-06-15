@@ -7,6 +7,16 @@
         <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/seckill-application/pom.xml" />
+        <option value="$PROJECT_DIR$/seckill-domain/pom.xml" />
+        <option value="$PROJECT_DIR$/seckill-front/pom.xml" />
+        <option value="$PROJECT_DIR$/seckill-infrastructure/pom.xml" />
+        <option value="$PROJECT_DIR$/seckill-interfaces/pom.xml" />
+        <option value="$PROJECT_DIR$/seckill-starter/pom.xml" />
+      </set>
+    </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />

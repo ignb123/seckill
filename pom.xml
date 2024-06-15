@@ -11,29 +11,34 @@
     <name>seckill</name>
     <description>秒杀系统</description>
     <modules>
-        <module>seckill-interfaces</module>
-        <module>seckill-application</module>
-        <module>seckill-domain</module>
-        <module>seckill-infrastructure</module>
         <module>seckill-nginx</module>
-        <module>seckill-starter</module>
+        <module>seckill-activity</module>
+        <module>seckill-common</module>
+        <module>seckill-dubbo-interfaces</module>
+        <module>seckill-goods</module>
+        <module>seckill-order</module>
+        <module>seckill-user</module>
+        <module>seckill-user/seckill-user-infrastructure</module>
+        <module>seckill-user/seckill-user-interfaces</module>
+        <module>seckill-user/seckill-user-starter</module>
     </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.4.5</version>
+        <version>2.5.9</version>
     </parent>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-boot.version>2.4.5</spring-boot.version>
+        <spring-boot.version>2.5.9</spring-boot.version>
         <spring-cloud-alibaba.version>2.2.2.RELEASE</spring-cloud-alibaba.version>
         <fastjson.version>1.2.72</fastjson.version>
-        <rocketmq.version>2.2.1</rocketmq.version>
-        <guava.version>18.0</guava.version>
+        <rocketmq.version>4.9.3</rocketmq.version>
+        <rocketmq.boot.version>2.2.2</rocketmq.boot.version>
+        <guava.version>30.1-jre</guava.version>
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <joda-time.version>2.6</joda-time.version>
         <jaxb.version>2.3.0</jaxb.version>
@@ -44,9 +49,11 @@
         <junit.version>4.12</junit.version>
         <redisson.version>3.16.3</redisson.version>
         <mybatis.version>3.4.6</mybatis.version>
-        <cola.version>3.0.0</cola.version>
+        <cola.version>4.0.1</cola.version>
         <shiro.spring.version>1.3.2</shiro.spring.version>
         <jwt.version>3.4.0</jwt.version>
+        <dubbo3.version>3.0.7</dubbo3.version>
+        <hutool.version>5.8.18</hutool.version>
         <mybatis.spring.version>1.3.2</mybatis.spring.version>
         <docker.image.prefix>seckill</docker.image.prefix>
     </properties>
@@ -67,8 +74,23 @@
         <dependency>
             <groupId>org.apache.rocketmq</groupId>
             <artifactId>rocketmq-spring-boot-starter</artifactId>
-            <version>${rocketmq.version}</version>
+            <version>2.2.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-webmvc</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+
 
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -89,11 +111,11 @@
             <optional>true</optional>
         </dependency>
 
-        <!--mysql&mybatis与springboot的集成-->
-        <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
@@ -128,13 +150,13 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>cola-core</artifactId>
-            <version>${cola.version}</version>
+            <version>3.0.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>cola-common</artifactId>
-            <version>${cola.version}</version>
+            <version>3.0.0</version>
         </dependency>
 
         <!--Joda-Time-->
@@ -179,6 +201,18 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>${shiro.spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>${druid.version}</version>
@@ -191,17 +225,6 @@
             <version>4.12</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-spring</artifactId>
-            <version>${shiro.spring.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>${jwt.version}</version>
-        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -212,6 +235,20 @@
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- dubbo -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>${dubbo3.version}</version>
+            </dependency>
+
+            <!-- nacos作注册中心-->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-registry-nacos</artifactId>
+                <version>${dubbo3.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
