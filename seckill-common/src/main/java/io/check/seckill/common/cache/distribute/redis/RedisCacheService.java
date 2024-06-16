@@ -27,16 +27,10 @@ public class RedisCacheService implements DistributedCacheService {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-    /**
-     * 初始化库存操作的Redis脚本。
-     * 这些脚本用于对库存进行原子操作，确保在高并发环境下的库存操作准确性。
-     * DECREASE_STOCK_SCRIPT: 用于减少库存的脚本。
-     * INCREASE_STOCK_SCRIPT: 用于增加库存的脚本。
-     * INIT_STOCK_SCRIPT: 用于初始化库存的脚本。
-     */
     private static final DefaultRedisScript<Long> DECREASE_STOCK_SCRIPT;
     private static final DefaultRedisScript<Long> INCREASE_STOCK_SCRIPT;
     private static final DefaultRedisScript<Long> INIT_STOCK_SCRIPT;
+    private static final DefaultRedisScript<Long> CHECK_RECOVER_STOCK;
 
     static {
         //扣减库存
@@ -53,6 +47,11 @@ public class RedisCacheService implements DistributedCacheService {
         INIT_STOCK_SCRIPT = new DefaultRedisScript<>();
         INIT_STOCK_SCRIPT.setLocation(new ClassPathResource("lua/init_goods_stock.lua"));
         INIT_STOCK_SCRIPT.setResultType(Long.class);
+
+        //检测是否执行过恢复缓存库存的操作
+        CHECK_RECOVER_STOCK = new DefaultRedisScript<>();
+        CHECK_RECOVER_STOCK.setLocation(new ClassPathResource("lua/check_recover_stock.lua"));
+        CHECK_RECOVER_STOCK.setResultType(Long.class);
     }
 
     @Override
@@ -139,6 +138,22 @@ public class RedisCacheService implements DistributedCacheService {
     }
 
     @Override
+    public Long addSet(String key, Object... values) {
+        return redisTemplate.opsForSet().add(key, values);
+    }
+
+    @Override
+    public Long removeSet(String key, Object... values) {
+        return redisTemplate.opsForSet().remove(key, values);
+    }
+
+    @Override
+    public Boolean isMemberSet(String key, Object o) {
+        return redisTemplate.opsForSet().isMember(key, o);
+    }
+
+
+    @Override
     public Long decrement(String key, long delta) {
         return redisTemplate.opsForValue().decrement(key, delta);
     }
@@ -173,5 +188,10 @@ public class RedisCacheService implements DistributedCacheService {
         if (result == SeckillConstants.LUA_RESULT_GOODS_STOCK_LT_ZERO){
             throw new SeckillException(ErrorCode.STOCK_LT_ZERO);
         }
+    }
+
+    @Override
+    public Long checkRecoverStockByLua(String key, Long seconds) {
+        return redisTemplate.execute(CHECK_RECOVER_STOCK, Collections.singletonList(key), seconds);
     }
 }

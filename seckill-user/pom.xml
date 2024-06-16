@@ -14,6 +14,9 @@
     <modules>
         <module>seckill-user-application</module>
         <module>seckill-user-domain</module>
+        <module>seckill-user-infrastructure</module>
+        <module>seckill-user-interfaces</module>
+        <module>seckill-user-starter</module>
     </modules>
 
     <properties>

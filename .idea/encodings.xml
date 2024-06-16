@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://D:/maven/apache-maven-3.9.5/maven-repo/org/springframework/boot/spring-boot-starter-parent/2.5.9/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/seckill-activity/seckill-activity-application/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/seckill-activity/seckill-activity-domain/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/seckill-activity/seckill-activity-infrastructure/src/main/java" charset="UTF-8" />
@@ -43,6 +44,7 @@
     <file url="file://$PROJECT_DIR$/seckill-user/seckill-user-infrastructure/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/seckill-user/seckill-user-interfaces/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/seckill-user/seckill-user-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/seckill-user/seckill-user-starter/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/seckill-user/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/seckill-user/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />

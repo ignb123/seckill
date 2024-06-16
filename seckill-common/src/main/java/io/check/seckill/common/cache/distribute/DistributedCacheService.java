@@ -15,6 +15,13 @@ public interface DistributedCacheService {
     Boolean delete(String key);
     Boolean hasKey(String key);
 
+    Long addSet(String key, Object... values);
+
+    Long removeSet(String key, Object... values);
+
+    Boolean isMemberSet(String key, Object o);
+
+
     /**
      * 扣减内存中的数据
      */
@@ -53,5 +60,9 @@ public interface DistributedCacheService {
      * 检测结果Lua执行结果
      */
     default void checkResult(Long result){}
+
+    default Long checkRecoverStockByLua(String key, Long seconds){
+        return null;
+    }
 
 }

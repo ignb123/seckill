@@ -2,6 +2,7 @@ package io.check.seckill.application.service;
 
 import io.check.seckill.application.command.SeckillGoodsCommond;
 import io.check.seckill.common.model.dto.SeckillGoodsDTO;
+import io.check.seckill.common.model.message.TxMessage;
 import io.check.seckill.goods.domain.model.entity.SeckillGoods;
 
 import java.util.List;
@@ -47,6 +48,8 @@ public interface SeckillGoodsService {
      * 扣减库存
      */
     boolean updateAvailableStock(Integer count, Long id);
+
+    boolean updateAvailableStock(TxMessage txMessage);
 
     /**
      * 扣减数据库库存

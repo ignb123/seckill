@@ -1,7 +1,11 @@
 package io.check.seckill.common.event.publisher;
 
-import com.alibaba.cola.event.DomainEventI;
+import io.check.seckill.common.event.SeckillBaseEvent;
 
 public interface EventPublisher {
-    void publish(DomainEventI domainEvent);
+
+    /**
+     * 发布事件
+     */
+    void publish(SeckillBaseEvent domainEvent);
 }

@@ -5,9 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.check.seckill</groupId>
-        <artifactId>seckill</artifactId>
+        <artifactId>seckill-user</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>seckill-user-starter</artifactId>

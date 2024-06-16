@@ -18,14 +18,156 @@ public class SeckillConstants {
     public static final int LUA_RESULT_GOODS_STOCK_LT_ZERO = -3;
 
     /**
+     * 已经执行过恢复缓存库存的操作
+     */
+    public static final Long CHECK_RECOVER_STOCK_HAS_EXECUTE = 0L;
+
+    /**
+     * 未执行过恢复缓存库存的操作
+     */
+    public static final Long CHECK_RECOVER_STOCK_NOT_EXECUTE = 1L;
+
+    /**
+     * 事务日志7天过期
+     */
+    public static final long TX_LOG_EXPIRE_DAY = 7;
+
+    /**
+     * 事务日志过期秒数
+     */
+    public static final long TX_LOG_EXPIRE_SECONDS = 7 * 24 * 3600;
+
+    /**
      * 商品key前缀
      */
     public static final String GOODS_ITEM_KEY_PREFIX = "item:";
 
     /**
+     * 商品事务列表
+     */
+    public static final String GOODS_TX_KEY = "item_tx:";
+
+    /**
+     * 订单事务列表
+     */
+    public static final String ORDER_TX_KEY = "order_tx:";
+
+    /**
+     * 事务消息主题
+     */
+    public static final String TOPIC_TX_MSG = "topic_tx_msg";
+
+    /**
+     * 异常消息主题
+     */
+    public static final String TOPIC_ERROR_MSG = "topic_error_msg";
+
+    /**
+     * 数据库方式
+     */
+    public static final String PLACE_ORDER_TYPE_DB = "db";
+
+    /**
+     * 分布式锁方法
+     */
+    public static final String PLACE_ORDER_TYPE_LOCK = "lock";
+
+    /**
+     * lua脚本方式
+     */
+    public static final String PLACE_ORDER_TYPE_LUA = "lua";
+
+    /**
+     * 事务消息的key
+     */
+    public static final String TX_MSG_KEY = "txMessage";
+
+    /**
+     * 错误消息的key
+     */
+    public static final String ERROR_MSG_KEY = "errorMessage";
+
+    /**
+     * 事件消息Key
+     */
+    public static final String EVENT_MSG_KEY = "eventMessage";
+
+    /**
+     * 活动事件消息topic
+     */
+    public static final String TOPIC_EVENT_ROCKETMQ_ACTIVITY = "topic_event_rocketmq_activity";
+
+    /**
+     * 商品事件消息topic
+     */
+    public static final String TOPIC_EVENT_ROCKETMQ_GOODS = "topic_event_rocketmq_goods";
+
+    /**
+     * 订单事件消息topic
+     */
+    public static final String TOPIC_EVENT_ROCKETMQ_ORDER = "topic_event_rocketmq_order";
+
+    /**
+     * 订单消费分组
+     */
+    public static final String EVENT_ORDER_CONSUMER_GROUP = "event_order_consumer_group";
+
+    /**
+     * 商品消费分组
+     */
+    public static final String EVENT_GOODS_CONSUMER_GROUP = "event_goods_consumer_group";
+
+    /**
+     * 活动消费分组
+     */
+    public static final String EVENT_ACTIVITY_CONSUMER_GROUP = "event_activity_consumer_group";
+
+
+    /**
+     * Cola订阅事件
+     */
+    public static final String TOPIC_EVENT_COLA = "topic_event_cola";
+
+    /**
+     * cola事件类型
+     */
+    public static final String EVENT_PUBLISH_TYPE_COLA = "cola";
+
+    /**
+     * RocketMQ事件类型
+     */
+    public static final String EVENT_PUBLISH_TYPE_ROCKETMQ = "rocketmq";
+
+    /**
+     * 订单事务分组
+     */
+    public static final String TX_ORDER_PRODUCER_GROUP = "tx_order_producer_group";
+
+    /**
+     * 订单消费分组
+     */
+    public static final String TX_ORDER_CONSUMER_GROUP = "tx_order_consumer_group";
+
+    /**
+     * 商品事务分组
+     */
+    public static final String TX_GOODS_PRODUCER_GROUP = "tx_goods_producer_group";
+
+    /**
+     * 商品消费分组
+     */
+    public static final String TX_GOODS_CONSUMER_GROUP = "tx_goods_condumer_group";
+
+
+    /**
      * 订单Key前缀
      */
     public static final String ORDER_KEY_PREFIX = "order:";
+
+    /**
+     * Lua脚本后缀
+     */
+    public static final String LUA_SUFFIX = "_lua";
 
     /**
      * 订单锁
@@ -60,7 +202,7 @@ public class SeckillConstants {
     }
 
     /**
-     * token的载荷中存放的信息 只存放一个userId
+     * token的载荷中盛放的信息 只盛放一个userName 其余什么也不再盛放
      */
     public static final String TOKEN_CLAIM = "userId";
 
@@ -79,6 +221,7 @@ public class SeckillConstants {
      */
     public static final String JWT_SECRET = "a814edb0e7c1ba4c";
 
+
     /*****************缓存相关的配置****************/
     public static final Long FIVE_MINUTES = 5 * 60L;
     public static final Long FIVE_SECONDS = 5L;
@@ -89,5 +232,4 @@ public class SeckillConstants {
 
     public static final String SECKILL_GOODS_CACHE_KEY = "SECKILL_GOODS_CACHE_KEY";
     public static final String SECKILL_GOODSES_CACHE_KEY = "SECKILL_GOODSES_CACHE_KEY";
-
 }

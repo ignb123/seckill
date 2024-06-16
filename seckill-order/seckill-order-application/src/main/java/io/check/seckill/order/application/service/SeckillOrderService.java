@@ -1,5 +1,6 @@
 package io.check.seckill.order.application.service;
 
+import io.check.seckill.common.model.message.ErrorMessage;
 import io.check.seckill.order.application.command.SeckillOrderCommand;
 import io.check.seckill.order.domain.model.entity.SeckillOrder;
 
@@ -26,4 +27,9 @@ public interface SeckillOrderService {
      * 根据活动id获取订单列表
      */
     List<SeckillOrder> getSeckillOrderByActivityId(Long activityId);
+
+    /**
+     * 删除订单
+     */
+    void deleteOrder(ErrorMessage errorMessage);
 }
