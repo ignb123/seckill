@@ -7,10 +7,10 @@ import io.check.seckill.activity.domain.model.entity.SeckillActivity;
 import io.check.seckill.activity.domain.repository.SeckillActivityRepository;
 import io.check.seckill.activity.domain.service.SeckillActivityDomainService;
 import io.check.seckill.common.constants.SeckillConstants;
-import io.check.seckill.common.event.publisher.EventPublisher;
 import io.check.seckill.common.exception.ErrorCode;
 import io.check.seckill.common.exception.SeckillException;
 import io.check.seckill.common.model.enums.SeckillActivityStatus;
+import io.check.seckill.mq.MessageSenderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +29,11 @@ public class SeckillActivityDomainServiceImpl implements SeckillActivityDomainSe
     private SeckillActivityRepository seckillActivityRepository;
 
     @Autowired
-    private EventPublisher eventPublisher;
+    private MessageSenderService messageSenderService;
 
-    @Value("${event.publish.type}")
+    @Value("${message.mq.type}")
     private String eventType;
+
 
 
     @Override
@@ -47,7 +48,7 @@ public class SeckillActivityDomainServiceImpl implements SeckillActivityDomainSe
 
         SeckillActivityEvent seckillActivityEvent =
                 new SeckillActivityEvent(seckillActivity.getId(), seckillActivity.getStatus(), getTopicEvent());
-        eventPublisher.publish(seckillActivityEvent);
+        messageSenderService.send(seckillActivityEvent);
         logger.info("activityPublish|秒杀活动事件已发布|{}", JSON.toJSON(seckillActivityEvent));
     }
 
@@ -78,7 +79,7 @@ public class SeckillActivityDomainServiceImpl implements SeckillActivityDomainSe
         seckillActivityRepository.updateStatus(status, id);
         logger.info("activityPublish|发布秒杀活动状态事件|{},{}", status, id);
         SeckillActivityEvent seckillActivityEvent = new SeckillActivityEvent(id, status, getTopicEvent());
-        eventPublisher.publish(seckillActivityEvent);
+        messageSenderService.send(seckillActivityEvent);
         logger.info("activityPublish|秒杀活动事件已发布|{}", id);
     }
 

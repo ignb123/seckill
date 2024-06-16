@@ -2,10 +2,11 @@ package io.check.seckill.order.domain.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import io.check.seckill.common.constants.SeckillConstants;
-import io.check.seckill.common.event.publisher.EventPublisher;
+import io.check.seckill.common.model.message.TopicMessage;
 import io.check.seckill.common.exception.ErrorCode;
 import io.check.seckill.common.exception.SeckillException;
 import io.check.seckill.common.model.enums.SeckillOrderStatus;
+import io.check.seckill.mq.MessageSenderService;
 import io.check.seckill.order.domain.event.SeckillOrderEvent;
 import io.check.seckill.order.domain.model.entity.SeckillOrder;
 import io.check.seckill.order.domain.repository.SeckillOrderRepository;
@@ -30,11 +31,10 @@ public class SeckillOrderDomainServiceImpl implements SeckillOrderDomainService 
     @Autowired
     private SeckillOrderRepository seckillOrderRepository;
     @Autowired
-    private EventPublisher eventPublisher;
+    private MessageSenderService messageSenderService;
 
-    @Value("${event.publish.type}")
+    @Value("${message.mq.type}")
     private String eventType;
-
 
     @Override
     public boolean saveSeckillOrder(SeckillOrder seckillOrder) {
@@ -48,7 +48,7 @@ public class SeckillOrderDomainServiceImpl implements SeckillOrderDomainService 
             logger.info("saveSeckillOrder|创建订单成功|{}", JSON.toJSONString(seckillOrder));
             SeckillOrderEvent seckillOrderEvent = new SeckillOrderEvent(seckillOrder.getId(),
                     SeckillOrderStatus.CREATED.getCode(), getTopicEvent());
-            eventPublisher.publish(seckillOrderEvent);
+            messageSenderService.send(seckillOrderEvent);
         }
         return saveSuccess;
     }

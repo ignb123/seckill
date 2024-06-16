@@ -1,7 +1,7 @@
 package io.check.seckill.order.domain.event;
 
 
-import io.check.seckill.common.event.SeckillBaseEvent;
+import io.check.seckill.common.model.event.SeckillBaseEvent;
 
 /**
  * @author check

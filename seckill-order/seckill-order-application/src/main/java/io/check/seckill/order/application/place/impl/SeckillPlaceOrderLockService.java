@@ -13,6 +13,7 @@ import io.check.seckill.common.model.dto.SeckillGoodsDTO;
 import io.check.seckill.common.model.message.TxMessage;
 import io.check.seckill.common.utils.id.SnowFlakeFactory;
 import io.check.seckill.dubbo.interfaces.goods.SeckillGoodsDubboService;
+import io.check.seckill.mq.MessageSenderService;
 import io.check.seckill.order.application.command.SeckillOrderCommand;
 import io.check.seckill.order.application.place.SeckillPlaceOrderService;
 import io.check.seckill.order.domain.model.entity.SeckillOrder;
@@ -47,7 +48,7 @@ public class SeckillPlaceOrderLockService implements SeckillPlaceOrderService {
     @Autowired
     private DistributedCacheService distributedCacheService;
     @Autowired
-    private RocketMQTemplate rocketMQTemplate;
+    private MessageSenderService messageSenderService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -97,10 +98,9 @@ public class SeckillPlaceOrderLockService implements SeckillPlaceOrderService {
         }finally {
             lock.unlock();
         }
-        //事务消息
-        Message<String> message = this.getTxMessage(txNo, userId,  SeckillConstants.PLACE_ORDER_TYPE_LOCK, exception, seckillOrderCommand, seckillGoods);
         //发送事务消息
-        rocketMQTemplate.sendMessageInTransaction(SeckillConstants.TOPIC_TX_MSG, message, null);
+        messageSenderService.sendMessageInTransaction(this.getTxMessage(SeckillConstants.TOPIC_TX_MSG, txNo, userId,
+                SeckillConstants.PLACE_ORDER_TYPE_LOCK, exception, seckillOrderCommand, seckillGoods), null);
         return txNo;
     }
 

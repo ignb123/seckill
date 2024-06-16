@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnProperty(name = "event.publish.type", havingValue = "rocketmq")
+@ConditionalOnProperty(name = "message.mq.type", havingValue = "rocketmq")
 @RocketMQMessageListener(consumerGroup = SeckillConstants.EVENT_ORDER_CONSUMER_GROUP,
         topic = SeckillConstants.TOPIC_EVENT_ROCKETMQ_ORDER)
 public class SeckillOrderRocketMQEventHandler implements RocketMQListener<String> {
@@ -35,7 +35,7 @@ public class SeckillOrderRocketMQEventHandler implements RocketMQListener<String
 
     private SeckillOrderEvent getEventMessage(String msg){
         JSONObject jsonObject = JSONObject.parseObject(msg);
-        String eventStr = jsonObject.getString(SeckillConstants.EVENT_MSG_KEY);
+        String eventStr = jsonObject.getString(SeckillConstants.MSG_KEY);
         return JSONObject.parseObject(eventStr, SeckillOrderEvent.class);
     }
 }

@@ -11,12 +11,12 @@ import io.check.seckill.common.model.dto.SeckillGoodsDTO;
 import io.check.seckill.common.model.message.TxMessage;
 import io.check.seckill.common.utils.id.SnowFlakeFactory;
 import io.check.seckill.dubbo.interfaces.goods.SeckillGoodsDubboService;
+import io.check.seckill.mq.MessageSenderService;
 import io.check.seckill.order.application.command.SeckillOrderCommand;
 import io.check.seckill.order.application.place.SeckillPlaceOrderService;
 import io.check.seckill.order.domain.model.entity.SeckillOrder;
 import io.check.seckill.order.domain.service.SeckillOrderDomainService;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class SeckillPlaceOrderLuaService implements SeckillPlaceOrderService {
     private DistributedCacheService distributedCacheService;
 
     @Autowired
-    private RocketMQTemplate rocketMQTemplate;
+    private MessageSenderService messageSenderService;
 
     @Override
     public Long placeOrder(Long userId, SeckillOrderCommand seckillOrderCommand) {
@@ -77,11 +77,9 @@ public class SeckillPlaceOrderLuaService implements SeckillPlaceOrderService {
             //将内存中的库存增加回去
             distributedCacheService.incrementByLua(key, seckillOrderCommand.getQuantity());
         }
-        //事务消息
-        Message<String> message = this.getTxMessage(txNo, userId, SeckillConstants.PLACE_ORDER_TYPE_LUA,
-                exception, seckillOrderCommand, seckillGoods);
         //发送事务消息
-        rocketMQTemplate.sendMessageInTransaction(SeckillConstants.TOPIC_TX_MSG, message, null);
+        messageSenderService.sendMessageInTransaction(this.getTxMessage(SeckillConstants.TOPIC_TX_MSG, txNo,
+                userId, SeckillConstants.PLACE_ORDER_TYPE_LUA, exception, seckillOrderCommand, seckillGoods),null);
         return txNo;
     }
 

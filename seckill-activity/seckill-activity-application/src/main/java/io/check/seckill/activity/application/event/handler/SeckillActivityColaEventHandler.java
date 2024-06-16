@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 @EventHandler
-@ConditionalOnProperty(name = "event.publish.type", havingValue = "cola")
+@ConditionalOnProperty(name = "message.mq.type", havingValue = "cola")
 public class SeckillActivityColaEventHandler implements EventHandlerI<Response, SeckillActivityEvent> {
 
     private final Logger logger = LoggerFactory.getLogger(SeckillActivityColaEventHandler.class);
