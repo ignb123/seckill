@@ -1,6 +1,7 @@
 package io.check.seckill.common.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.check.seckill.common.model.enums.SeckillGoodsStatus;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -61,6 +62,19 @@ public class SeckillGoodsDTO implements Serializable {
 
     //数据版本
     private Long version;
+
+    public boolean isOnline(){
+        return SeckillGoodsStatus.isOnline(status);
+    }
+
+    public boolean isOffline(){
+        return SeckillGoodsStatus.isOffline(status);
+    }
+
+    public boolean isInSeckilling(){
+        Date currentDate = new Date();
+        return startTime.before(currentDate) && endTime.after(currentDate);
+    }
 
     public Integer getLimitNum() {
         return limitNum;

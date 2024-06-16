@@ -12,7 +12,7 @@ import io.check.seckill.common.model.message.TxMessage;
 import io.check.seckill.common.utils.id.SnowFlakeFactory;
 import io.check.seckill.dubbo.interfaces.goods.SeckillGoodsDubboService;
 import io.check.seckill.mq.MessageSenderService;
-import io.check.seckill.order.application.command.SeckillOrderCommand;
+import io.check.seckill.order.application.model.command.SeckillOrderCommand;
 import io.check.seckill.order.application.place.SeckillPlaceOrderService;
 import io.check.seckill.order.domain.model.entity.SeckillOrder;
 import io.check.seckill.order.domain.service.SeckillOrderDomainService;

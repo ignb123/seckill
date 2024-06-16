@@ -1,10 +1,12 @@
 package io.check.seckill.order.interfaces.controller;
 
 import io.check.seckill.common.exception.ErrorCode;
+import io.check.seckill.common.model.dto.SeckillOrderSubmitDTO;
 import io.check.seckill.common.response.ResponseMessage;
 import io.check.seckill.common.response.ResponseMessageBuilder;
-import io.check.seckill.order.application.command.SeckillOrderCommand;
+import io.check.seckill.order.application.model.command.SeckillOrderCommand;
 import io.check.seckill.order.application.service.SeckillOrderService;
+import io.check.seckill.order.application.service.SeckillSubmitOrderService;
 import io.check.seckill.order.domain.model.entity.SeckillOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestAttribute;
@@ -26,13 +28,16 @@ public class SeckillOrderController {
     @Autowired
     private SeckillOrderService seckillOrderService;
 
+    @Autowired
+    private SeckillSubmitOrderService seckillSubmitOrderService;
+
     /**
      * 保存秒杀订单
      */
     @RequestMapping(value = "/saveSeckillOrder", method = {RequestMethod.GET,RequestMethod.POST})
-    public ResponseMessage<Long> saveSeckillOrder(@RequestAttribute Long userId, SeckillOrderCommand seckillOrderCommand){
-        Long orderId = seckillOrderService.saveSeckillOrder(userId, seckillOrderCommand);
-        return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode(), orderId);
+    public ResponseMessage<SeckillOrderSubmitDTO> saveSeckillOrder(@RequestAttribute Long userId, SeckillOrderCommand seckillOrderCommand){
+        SeckillOrderSubmitDTO seckillOrderSubmitDTO = seckillSubmitOrderService.saveSeckillOrder(userId, seckillOrderCommand);
+        return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode(), seckillOrderSubmitDTO);
     }
     /**
      * 获取用户维度的订单列表

@@ -14,17 +14,15 @@ import io.check.seckill.common.model.message.TxMessage;
 import io.check.seckill.common.utils.id.SnowFlakeFactory;
 import io.check.seckill.dubbo.interfaces.goods.SeckillGoodsDubboService;
 import io.check.seckill.mq.MessageSenderService;
-import io.check.seckill.order.application.command.SeckillOrderCommand;
+import io.check.seckill.order.application.model.command.SeckillOrderCommand;
 import io.check.seckill.order.application.place.SeckillPlaceOrderService;
 import io.check.seckill.order.domain.model.entity.SeckillOrder;
 import io.check.seckill.order.domain.service.SeckillOrderDomainService;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -135,7 +133,7 @@ public class SeckillPlaceOrderLockService implements SeckillPlaceOrderService {
         //扣减过缓存库存
         if (BooleanUtil.isFalse(txMessage.getException())){
             String luaKey = SeckillConstants.getKey(SeckillConstants.ORDER_TX_KEY, String.valueOf(txMessage.getTxNo())).concat(SeckillConstants.LUA_SUFFIX);
-            Long result = distributedCacheService.checkRecoverStockByLua(luaKey, SeckillConstants.TX_LOG_EXPIRE_SECONDS);
+            Long result = distributedCacheService.checkExecute(luaKey, SeckillConstants.TX_LOG_EXPIRE_SECONDS);
             //已经执行过恢复缓存库存的方法
             if (NumberUtil.equals(result, SeckillConstants.CHECK_RECOVER_STOCK_HAS_EXECUTE)){
                 logger.info("handlerCacheStock|已经执行过恢复缓存库存的方法|{}", JSONObject.toJSONString(txMessage));

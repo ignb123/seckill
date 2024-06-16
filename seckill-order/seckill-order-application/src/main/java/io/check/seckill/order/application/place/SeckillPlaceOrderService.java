@@ -8,7 +8,7 @@ import io.check.seckill.common.model.enums.SeckillOrderStatus;
 import io.check.seckill.common.model.message.TxMessage;
 import io.check.seckill.common.utils.beans.BeanUtil;
 import io.check.seckill.common.utils.id.SnowFlakeFactory;
-import io.check.seckill.order.application.command.SeckillOrderCommand;
+import io.check.seckill.order.application.model.command.SeckillOrderCommand;
 import io.check.seckill.order.domain.model.entity.SeckillOrder;
 
 import java.math.BigDecimal;
@@ -34,14 +34,16 @@ public interface SeckillPlaceOrderService {
     /**
      * 构建订单
      */
-    default SeckillOrder buildSeckillOrder(Long userId, SeckillOrderCommand seckillOrderCommand, SeckillGoodsDTO seckillGoods){
+    default SeckillOrder buildSeckillOrder(Long userId, SeckillOrderCommand seckillOrderCommand,
+                                           SeckillGoodsDTO seckillGoods){
         SeckillOrder seckillOrder = new SeckillOrder();
         BeanUtil.copyProperties(seckillOrderCommand, seckillOrder);
         seckillOrder.setId(SnowFlakeFactory.getSnowFlakeFromCache().nextId());
         seckillOrder.setGoodsName(seckillGoods.getGoodsName());
         seckillOrder.setUserId(userId);
         seckillOrder.setActivityPrice(seckillGoods.getActivityPrice());
-        BigDecimal orderPrice = seckillGoods.getActivityPrice().multiply(BigDecimal.valueOf(seckillOrder.getQuantity()));
+        BigDecimal orderPrice =
+                seckillGoods.getActivityPrice().multiply(BigDecimal.valueOf(seckillOrder.getQuantity()));
         seckillOrder.setOrderPrice(orderPrice);
         seckillOrder.setStatus(SeckillOrderStatus.CREATED.getCode());
         seckillOrder.setCreateTime(new Date());
@@ -75,12 +77,16 @@ public interface SeckillPlaceOrderService {
         if (seckillGoods == null){
             throw new SeckillException(ErrorCode.GOODS_NOT_EXISTS);
         }
+        //已经超出活动时间范围
+        if (!seckillGoods.isInSeckilling()){
+            throw new SeckillException(ErrorCode.BEYOND_TIME);
+        }
         //商品未上线
-        if (seckillGoods.getStatus() == SeckillGoodsStatus.PUBLISHED.getCode()){
+        if (!seckillGoods.isOnline()){
             throw new SeckillException(ErrorCode.GOODS_PUBLISH);
         }
         //商品已下架
-        if (seckillGoods.getStatus() == SeckillGoodsStatus.OFFLINE.getCode()){
+        if (seckillGoods.isOffline()){
             throw new SeckillException(ErrorCode.GOODS_OFFLINE);
         }
         //触发限购

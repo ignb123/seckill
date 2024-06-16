@@ -15,7 +15,7 @@ public interface MessageSenderService {
      * 发送消息
      * @param message 发送的消息
      */
-    void send(TopicMessage message);
+    boolean send(TopicMessage message);
 
     /**
      * 发送事务消息，主要是RocketMQ

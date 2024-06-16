@@ -8,7 +8,7 @@ import io.check.seckill.common.constants.SeckillConstants;
 import io.check.seckill.common.exception.ErrorCode;
 import io.check.seckill.common.exception.SeckillException;
 import io.check.seckill.common.model.message.ErrorMessage;
-import io.check.seckill.order.application.command.SeckillOrderCommand;
+import io.check.seckill.order.application.model.command.SeckillOrderCommand;
 import io.check.seckill.order.application.place.SeckillPlaceOrderService;
 import io.check.seckill.order.application.security.SecurityService;
 import io.check.seckill.order.application.service.SeckillOrderService;
@@ -42,18 +42,6 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
     @Autowired
     private DistributedCacheService distributedCacheService;
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Long saveSeckillOrder(Long userId, SeckillOrderCommand seckillOrderCommand) {
-        if (userId == null || seckillOrderCommand == null){
-            throw new SeckillException(ErrorCode.PARAMS_INVALID);
-        }
-        //模拟风控
-        if (!securityService.securityPolicy(userId)){
-            throw new SeckillException(ErrorCode.USER_INVALID);
-        }
-        return seckillPlaceOrderService.placeOrder(userId, seckillOrderCommand);
-    }
 
     @Override
     public List<SeckillOrder> getSeckillOrderByUserId(Long userId) {
@@ -87,7 +75,7 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
         if (BooleanUtil.isFalse(errorMessage.getException())) {
             String luaKey = SeckillConstants.getKey(SeckillConstants.ORDER_TX_KEY,
                     String.valueOf(errorMessage.getTxNo())).concat(SeckillConstants.LUA_SUFFIX);
-            Long result = distributedCacheService.checkRecoverStockByLua(luaKey, SeckillConstants.TX_LOG_EXPIRE_SECONDS);
+            Long result = distributedCacheService.checkExecute(luaKey, SeckillConstants.TX_LOG_EXPIRE_SECONDS);
             //已经执行过恢复缓存库存的方法
             if (NumberUtil.equals(result, SeckillConstants.CHECK_RECOVER_STOCK_HAS_EXECUTE)){
                 logger.info("handlerCacheStock|已经执行过恢复缓存库存的方法|{}", JSONObject.toJSONString(errorMessage));

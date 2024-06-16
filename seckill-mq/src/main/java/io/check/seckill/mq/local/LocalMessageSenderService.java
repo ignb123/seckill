@@ -21,8 +21,9 @@ public class LocalMessageSenderService implements MessageSenderService {
     private EventBusI eventBus;
 
     @Override
-    public void send(TopicMessage message) {
+    public boolean send(TopicMessage message) {
         eventBus.fire(message);
+        return true;
     }
 
 }

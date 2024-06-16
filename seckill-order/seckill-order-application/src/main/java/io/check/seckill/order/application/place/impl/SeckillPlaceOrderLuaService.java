@@ -12,7 +12,7 @@ import io.check.seckill.common.model.message.TxMessage;
 import io.check.seckill.common.utils.id.SnowFlakeFactory;
 import io.check.seckill.dubbo.interfaces.goods.SeckillGoodsDubboService;
 import io.check.seckill.mq.MessageSenderService;
-import io.check.seckill.order.application.command.SeckillOrderCommand;
+import io.check.seckill.order.application.model.command.SeckillOrderCommand;
 import io.check.seckill.order.application.place.SeckillPlaceOrderService;
 import io.check.seckill.order.domain.model.entity.SeckillOrder;
 import io.check.seckill.order.domain.service.SeckillOrderDomainService;
@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,7 +54,8 @@ public class SeckillPlaceOrderLuaService implements SeckillPlaceOrderService {
         this.checkSeckillGoods(seckillOrderCommand, seckillGoods);
         boolean exception = false;
         long txNo = SnowFlakeFactory.getSnowFlakeFromCache().nextId();
-        String key = SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_KEY_PREFIX, String.valueOf(seckillOrderCommand.getGoodsId()));
+        String key = SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_STOCK_KEY_PREFIX,
+                String.valueOf(seckillOrderCommand.getGoodsId()));
         try {
             //获取商品限购信息
             Object limitObj = distributedCacheService
@@ -69,7 +69,6 @@ public class SeckillPlaceOrderLuaService implements SeckillPlaceOrderService {
                 throw new SeckillException(ErrorCode.BEYOND_LIMIT_NUM);
             }
             Long result = distributedCacheService.decrementByLua(key, seckillOrderCommand.getQuantity());
-            System.out.println(result);
             this.checkResult(result);
         }catch (Exception e){
             logger.error("SeckillPlaceOrderLuaService|下单异常|参数:{}|异常信息:{}", JSONObject.toJSONString(seckillOrderCommand), e.getMessage());
@@ -100,6 +99,7 @@ public class SeckillPlaceOrderLuaService implements SeckillPlaceOrderService {
             //保存事务日志
             distributedCacheService.put(SeckillConstants.getKey(SeckillConstants.ORDER_TX_KEY, String.valueOf(txMessage.getTxNo())),
                     txMessage.getTxNo(), SeckillConstants.TX_LOG_EXPIRE_DAY, TimeUnit.DAYS);
+//            int i = 1 / 0;
         }catch (Exception e){
             logger.error("saveOrderInTransaction|异常|{}", e.getMessage());
             distributedCacheService.delete(SeckillConstants.getKey(SeckillConstants.ORDER_TX_KEY, String.valueOf(txMessage.getTxNo())));
@@ -117,7 +117,7 @@ public class SeckillPlaceOrderLuaService implements SeckillPlaceOrderService {
             String luaKey = SeckillConstants
                     .getKey(SeckillConstants.ORDER_TX_KEY,
                             String.valueOf(txMessage.getTxNo())).concat(SeckillConstants.LUA_SUFFIX);
-            Long result = distributedCacheService.checkRecoverStockByLua(luaKey, SeckillConstants.TX_LOG_EXPIRE_SECONDS);
+            Long result = distributedCacheService.checkExecute(luaKey, SeckillConstants.TX_LOG_EXPIRE_SECONDS);
             //已经执行过恢复缓存库存的方法
             if (NumberUtil.equals(result, SeckillConstants.CHECK_RECOVER_STOCK_HAS_EXECUTE)){
                 logger.info("handlerCacheStock|已经执行过恢复缓存库存的方法|{}", JSONObject.toJSONString(txMessage));

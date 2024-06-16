@@ -2,7 +2,7 @@ package io.check.seckill.order.application.builder;
 
 import io.check.seckill.common.builder.SeckillCommonBuilder;
 import io.check.seckill.common.utils.beans.BeanUtil;
-import io.check.seckill.order.application.command.SeckillOrderCommand;
+import io.check.seckill.order.application.model.command.SeckillOrderCommand;
 import io.check.seckill.order.domain.model.entity.SeckillOrder;
 
 /**

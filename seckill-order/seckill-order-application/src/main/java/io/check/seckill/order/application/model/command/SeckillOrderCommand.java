@@ -1,4 +1,4 @@
-package io.check.seckill.order.application.command;
+package io.check.seckill.order.application.model.command;
 
 import java.io.Serializable;
 

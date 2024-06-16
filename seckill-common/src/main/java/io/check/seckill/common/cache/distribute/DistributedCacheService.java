@@ -1,5 +1,7 @@
 package io.check.seckill.common.cache.distribute;
 
+import org.springframework.data.redis.core.script.RedisScript;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -21,6 +23,11 @@ public interface DistributedCacheService {
 
     Boolean isMemberSet(String key, Object o);
 
+
+    /**
+     * 执行Lua脚本
+     */
+    Long execute(RedisScript<Long> script, List<String> keys, Object... args);
 
     /**
      * 扣减内存中的数据
@@ -57,11 +64,26 @@ public interface DistributedCacheService {
     }
 
     /**
-     * 检测结果Lua执行结果
+     * 检测是否执行过
+     * @param key
+     * @param seconds
+     * @return
      */
-    default void checkResult(Long result){}
+    default Long checkExecute(String key, Long seconds){
+        return null;
+    }
 
-    default Long checkRecoverStockByLua(String key, Long seconds){
+    /**
+     * 获取下单许可
+     */
+    default Long takeOrderToken(String key){
+        return null;
+    }
+
+    /**
+     * 恢复下单许可
+     */
+    default Long recoverOrderToken(String key){
         return null;
     }
 

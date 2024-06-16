@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import io.check.seckill.common.constants.SeckillConstants;
 import io.check.seckill.common.model.message.TopicMessage;
 import io.check.seckill.mq.MessageSenderService;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.client.producer.SendStatus;
 import org.apache.rocketmq.client.producer.TransactionSendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +22,13 @@ public class RocketMQMessageSenderService implements MessageSenderService {
     private RocketMQTemplate rocketMQTemplate;
 
     @Override
-    public void send(TopicMessage message) {
-        rocketMQTemplate.send(message.getDestination(), this.getMessage(message));
+    public boolean send(TopicMessage message) {
+        try{
+            SendResult sendResult = rocketMQTemplate.syncSend(message.getDestination(), this.getMessage(message));
+            return SendStatus.SEND_OK.equals(sendResult.getSendStatus());
+        }catch (Exception e){
+            return false;
+        }
     }
 
     @Override
