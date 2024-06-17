@@ -41,13 +41,13 @@ public class SeckillGoods implements Serializable {
     //秒杀活动价格
     private BigDecimal activityPrice;
 
-    //初始库存
+    //初始库存，如果设置了分桶库存，则此字段无效，库存由库存服务进行处理
     private Integer initialStock;
 
     //限购个数
     private Integer limitNum;
 
-    //当前可用库存
+    //当前可用库存，如果设置了分桶库存，则此字段无效，库存由库存服务进行处理
     private Integer availableStock;
 
     //描述
@@ -58,6 +58,10 @@ public class SeckillGoods implements Serializable {
 
     //秒杀状态 0：已发布； 1：上线； -1：下线
     private Integer status;
+
+    //分桶数量
+    private Integer bucketsQuantity;
+
 
     public boolean validateParams(){
         if (StringUtils.isEmpty(goodsName)
@@ -181,5 +185,13 @@ public class SeckillGoods implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getBucketsQuantity() {
+        return bucketsQuantity;
+    }
+
+    public void setBucketsQuantity(Integer bucketsQuantity) {
+        this.bucketsQuantity = bucketsQuantity;
     }
 }

@@ -38,6 +38,7 @@ public class SeckillUserServiceImpl implements SeckillUserService {
             throw new SeckillException(ErrorCode.USERNAME_IS_ERROR);
         }
         String paramsPassword = CommonsUtils.encryptPassword(password, userName);
+        System.out.println("我输入的密码: "+paramsPassword + "数据库:"+ seckillUser.getPassword());
         if (!paramsPassword.equals(seckillUser.getPassword())){
             throw new SeckillException(ErrorCode.PASSWORD_IS_ERROR);
         }
