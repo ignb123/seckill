@@ -1,5 +1,6 @@
 package io.check.seckill.order.config;
 
+import io.check.seckill.common.config.RedisConfig;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.*;

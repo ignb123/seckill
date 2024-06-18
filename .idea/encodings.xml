@@ -38,6 +38,13 @@
     <file url="file://$PROJECT_DIR$/seckill-order/seckill-order-starter/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/seckill-order/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/seckill-order/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/seckill-reservation/seckill-reservation-application/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/seckill-reservation/seckill-reservation-domain/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/seckill-reservation/seckill-reservation-infrastructure/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/seckill-reservation/seckill-reservation-interfaces/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/seckill-reservation/seckill-reservation-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/seckill-reservation/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/seckill-reservation/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/seckill-starter/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/seckill-starter/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/seckill-stock/seckill-stock-application/src/main/java" charset="UTF-8" />

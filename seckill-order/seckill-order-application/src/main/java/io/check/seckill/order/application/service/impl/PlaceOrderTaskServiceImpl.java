@@ -109,7 +109,7 @@ public class PlaceOrderTaskServiceImpl implements PlaceOrderTaskService {
                 return false;
             }
             if (result == SeckillConstants.LUA_RESULT_NOT_EXECUTE){
-                this.refreshLatestAvailableTokens(goodsId);
+                this.refreshLatestAvailableTokens(goodsId, false);
                 continue;
             }
             return result == SeckillConstants.LUA_RESULT_EXECUTE_TOKEN_SUCCESS;
@@ -127,7 +127,7 @@ public class PlaceOrderTaskServiceImpl implements PlaceOrderTaskService {
             return false;
         }
         if (result == SeckillConstants.LUA_RESULT_NOT_EXECUTE){
-            this.refreshLatestAvailableTokens(goodsId);
+            this.refreshLatestAvailableTokens(goodsId, false);
             return true;
         }
         return result == SeckillConstants.LUA_RESULT_EXECUTE_TOKEN_SUCCESS;
@@ -141,16 +141,18 @@ public class PlaceOrderTaskServiceImpl implements PlaceOrderTaskService {
         if (availableOrderTokens != null){
             return availableOrderTokens;
         }
-        return this.refreshLocalAvailableTokens(goodsId);
+        return this.refreshLocalAvailableTokens(goodsId, false);
     }
 
     /**
      * 刷新本地缓存可用的下单许可，注意DoubleCheck
      */
-    private Integer refreshLocalAvailableTokens(Long goodsId) {
-        Integer availableOrderTokens = localCacheService.getIfPresent(goodsId);
-        if (availableOrderTokens != null){
-            return availableOrderTokens;
+    private Integer refreshLocalAvailableTokens(Long goodsId, boolean doubleCheck) {
+        if (doubleCheck){
+            Integer availableOrderTokens = localCacheService.getIfPresent(goodsId);
+            if (availableOrderTokens != null){
+                return availableOrderTokens;
+            }
         }
         String availableTokensKey = SeckillConstants.getKey(SeckillConstants.ORDER_TASK_AVAILABLE_TOKENS_KEY, String.valueOf(goodsId));
         Integer latestAvailableOrderTokens = distributedCacheService.getObject(availableTokensKey, Integer.class);
@@ -164,13 +166,13 @@ public class PlaceOrderTaskServiceImpl implements PlaceOrderTaskService {
             }
             return latestAvailableOrderTokens;
         }
-        return this.refreshLatestAvailableTokens(goodsId);
+        return this.refreshLatestAvailableTokens(goodsId, false);
     }
 
     /**
      * 刷新分布式缓存的下单许可，double check
      */
-    private Integer refreshLatestAvailableTokens(Long goodsId) {
+    private Integer refreshLatestAvailableTokens(Long goodsId, boolean doubleCheck) {
         String lockKey = SeckillConstants.getKey(SeckillConstants.LOCK_REFRESH_LATEST_AVAILABLE_TOKENS_KEY, String.valueOf(goodsId));
         DistributedLock distributedLock = distributedLockFactory.getDistributedLock(lockKey);
         try{
@@ -178,20 +180,23 @@ public class PlaceOrderTaskServiceImpl implements PlaceOrderTaskService {
             if (!isLock){
                 return null;
             }
-            //本地缓存已经存在数据
-            Integer availableOrderTokens = localCacheService.getIfPresent(goodsId);
-            if (availableOrderTokens != null){
-                return availableOrderTokens;
-            }
             //获取分布式缓存数据
+            Integer latestAvailableOrderTokens;
             String availableTokensKey = SeckillConstants.getKey(SeckillConstants.ORDER_TASK_AVAILABLE_TOKENS_KEY, String.valueOf(goodsId));
-            Integer latestAvailableOrderTokens = distributedCacheService.getObject(availableTokensKey, Integer.class);
-            //分布式缓存中存在数据，设置到本地缓存，并且返回数据
-            if (latestAvailableOrderTokens != null){
-                localCacheService.put(goodsId, latestAvailableOrderTokens);
-                return latestAvailableOrderTokens;
+            if(doubleCheck){
+                //本地缓存已经存在数据
+                Integer availableOrderTokens = localCacheService.getIfPresent(goodsId);
+                if (availableOrderTokens != null){
+                    return availableOrderTokens;
+                }
+                //获取分布式缓存数据
+                latestAvailableOrderTokens = distributedCacheService.getObject(availableTokensKey, Integer.class);
+                //分布式缓存中存在数据，设置到本地缓存，并且返回数据
+                if (latestAvailableOrderTokens != null){
+                    localCacheService.put(goodsId, latestAvailableOrderTokens);
+                    return latestAvailableOrderTokens;
+                }
             }
-            //本地缓存和分布式缓存都没有数据，获取商品的库存数据
             SeckillBusinessCache<Integer> availableStockCache = null;
             //分桶模式
             if (SeckillConstants.PLACE_ORDER_TYPE_BUCKET.equals(placeOrderType)){

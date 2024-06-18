@@ -1,5 +1,12 @@
 package io.check.seckill.common.cache.service;
 
 public interface SeckillCacheService {
-    String buildCacheKey(Object key);
+
+    /**
+     * 构建缓存的key
+     */
+    default String buildCacheKey(Object key){
+        return key == null ? "" : key.toString();
+    }
+
 }

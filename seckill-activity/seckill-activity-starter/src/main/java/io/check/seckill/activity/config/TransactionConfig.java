@@ -1,6 +1,9 @@
 package io.check.seckill.activity.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import io.check.seckill.common.config.JdbcConfig;
+import io.check.seckill.common.config.MyBatisConfig;
+import io.check.seckill.common.config.RedisConfig;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.*;

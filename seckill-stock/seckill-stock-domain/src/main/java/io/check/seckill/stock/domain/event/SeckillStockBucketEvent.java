@@ -1,5 +1,6 @@
 package io.check.seckill.stock.domain.event;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.check.seckill.common.model.event.SeckillBaseEvent;
 
 /**
@@ -9,7 +10,7 @@ import io.check.seckill.common.model.event.SeckillBaseEvent;
  */
 public class SeckillStockBucketEvent extends SeckillBaseEvent {
 
-    public SeckillStockBucketEvent(Long id, Integer status, String topicEvent) {
+    public SeckillStockBucketEvent(Long id, Integer status, @JSONField(name = "destination") String topicEvent) {
         super(id, status, topicEvent);
     }
 }
