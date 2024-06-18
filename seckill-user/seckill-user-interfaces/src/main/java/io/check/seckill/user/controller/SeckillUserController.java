@@ -1,7 +1,7 @@
 package io.check.seckill.user.controller;
 
 import io.check.seckill.common.exception.ErrorCode;
-import io.check.seckill.common.model.dto.SeckillUserDTO;
+import io.check.seckill.common.model.dto.user.SeckillUserDTO;
 import io.check.seckill.common.response.ResponseMessage;
 import io.check.seckill.common.response.ResponseMessageBuilder;
 import io.check.seckill.user.application.service.SeckillUserService;

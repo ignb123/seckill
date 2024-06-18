@@ -3,7 +3,7 @@ package io.check.seckill.goods.interfaces.controller;
 import io.check.seckill.application.command.SeckillGoodsCommond;
 import io.check.seckill.application.service.SeckillGoodsService;
 import io.check.seckill.common.exception.ErrorCode;
-import io.check.seckill.common.model.dto.SeckillGoodsDTO;
+import io.check.seckill.common.model.dto.goods.SeckillGoodsDTO;
 import io.check.seckill.common.response.ResponseMessage;
 import io.check.seckill.common.response.ResponseMessageBuilder;
 import io.check.seckill.goods.domain.model.entity.SeckillGoods;

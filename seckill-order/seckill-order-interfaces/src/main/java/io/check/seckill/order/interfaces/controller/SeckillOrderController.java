@@ -1,7 +1,7 @@
 package io.check.seckill.order.interfaces.controller;
 
 import io.check.seckill.common.exception.ErrorCode;
-import io.check.seckill.common.model.dto.SeckillOrderSubmitDTO;
+import io.check.seckill.common.model.dto.order.SeckillOrderSubmitDTO;
 import io.check.seckill.common.response.ResponseMessage;
 import io.check.seckill.common.response.ResponseMessageBuilder;
 import io.check.seckill.order.application.model.command.SeckillOrderCommand;
@@ -49,11 +49,11 @@ public class SeckillOrderController {
     }
 
     /**
-     * 获取活动维度的订单列表
+     * 获取商品维度的订单列表
      */
-    @RequestMapping(value = "/getSeckillOrderByActivityId", method = {RequestMethod.GET,RequestMethod.POST})
-    public ResponseMessage<List<SeckillOrder>> getSeckillOrderByActivityId(Long activityId){
-        List<SeckillOrder> seckillOrderList = seckillOrderService.getSeckillOrderByActivityId(activityId);
+    @RequestMapping(value = "/getSeckillOrderByGoodsId", method = {RequestMethod.GET,RequestMethod.POST})
+    public ResponseMessage<List<SeckillOrder>> getSeckillOrderByGoodsId(Long goodsId){
+        List<SeckillOrder> seckillOrderList = seckillOrderService.getSeckillOrderByGoodsId(goodsId);
         return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode(), seckillOrderList);
     }
 }

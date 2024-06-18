@@ -1,6 +1,6 @@
 package io.check.seckill.order.application.service;
 
-import io.check.seckill.common.model.dto.SeckillOrderSubmitDTO;
+import io.check.seckill.common.model.dto.order.SeckillOrderSubmitDTO;
 import io.check.seckill.order.application.model.task.SeckillOrderTask;
 import io.check.seckill.order.application.model.command.SeckillOrderCommand;
 

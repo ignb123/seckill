@@ -1,7 +1,7 @@
 package io.check.seckill.order.application.service.impl;
 
 import io.check.seckill.common.constants.SeckillConstants;
-import io.check.seckill.common.model.dto.SeckillOrderSubmitDTO;
+import io.check.seckill.common.model.dto.order.SeckillOrderSubmitDTO;
 import io.check.seckill.order.application.model.command.SeckillOrderCommand;
 import io.check.seckill.order.application.service.SeckillSubmitOrderService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

@@ -5,7 +5,7 @@ import io.check.seckill.activity.application.command.SeckillActivityCommand;
 import io.check.seckill.activity.application.service.SeckillActivityService;
 import io.check.seckill.activity.domain.model.entity.SeckillActivity;
 import io.check.seckill.common.exception.ErrorCode;
-import io.check.seckill.common.model.dto.SeckillActivityDTO;
+import io.check.seckill.common.model.dto.activity.SeckillActivityDTO;
 import io.check.seckill.common.response.ResponseMessage;
 import io.check.seckill.common.response.ResponseMessageBuilder;
 import io.check.seckill.common.utils.date.JodaDateTimeUtils;

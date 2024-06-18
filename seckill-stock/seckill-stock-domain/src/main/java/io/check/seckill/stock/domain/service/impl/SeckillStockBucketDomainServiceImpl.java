@@ -126,8 +126,15 @@ public class SeckillStockBucketDomainServiceImpl implements SeckillStockBucketDo
         if (stockDeduction == null || stockDeduction.isEmpty()){
             throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
-        return seckillStockBucketRepository
-                .decreaseStock(stockDeduction.getQuantity(), stockDeduction.getSerialNo(), stockDeduction.getGoodsId());
+        boolean success = seckillStockBucketRepository.
+                decreaseStock(stockDeduction.getQuantity(), stockDeduction.getSerialNo(), stockDeduction.getGoodsId());
+        if (success){
+            SeckillStockBucketEvent seckillStockBucketEvent = new SeckillStockBucketEvent(stockDeduction.getGoodsId(),
+                    SeckillStockBucketEventType.ENABLED.getCode(), getTopicEvent());
+            messageSenderService.send(seckillStockBucketEvent);
+        }
+        return success;
+
     }
 
     @Override
@@ -136,8 +143,15 @@ public class SeckillStockBucketDomainServiceImpl implements SeckillStockBucketDo
         if (stockDeduction == null || stockDeduction.isEmpty()){
             throw new SeckillException(ErrorCode.PARAMS_INVALID);
         }
-        return seckillStockBucketRepository
+        boolean success = seckillStockBucketRepository
                 .increaseStock(stockDeduction.getQuantity(), stockDeduction.getSerialNo(), stockDeduction.getGoodsId());
+        if (success){
+            SeckillStockBucketEvent seckillStockBucketEvent =
+                    new SeckillStockBucketEvent(stockDeduction.getGoodsId(), SeckillStockBucketEventType.ENABLED.getCode(), getTopicEvent());
+            messageSenderService.send(seckillStockBucketEvent);
+        }
+        return success;
+
     }
 
     /**

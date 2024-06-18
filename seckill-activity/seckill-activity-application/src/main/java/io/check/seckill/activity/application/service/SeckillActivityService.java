@@ -4,7 +4,7 @@ package io.check.seckill.activity.application.service;
 
 import io.check.seckill.activity.application.command.SeckillActivityCommand;
 import io.check.seckill.activity.domain.model.entity.SeckillActivity;
-import io.check.seckill.common.model.dto.SeckillActivityDTO;
+import io.check.seckill.common.model.dto.activity.SeckillActivityDTO;
 
 import java.util.Date;
 import java.util.List;

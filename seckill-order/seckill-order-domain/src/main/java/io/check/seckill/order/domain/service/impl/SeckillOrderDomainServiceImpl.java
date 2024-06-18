@@ -2,7 +2,6 @@ package io.check.seckill.order.domain.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import io.check.seckill.common.constants.SeckillConstants;
-import io.check.seckill.common.model.message.TopicMessage;
 import io.check.seckill.common.exception.ErrorCode;
 import io.check.seckill.common.exception.SeckillException;
 import io.check.seckill.common.model.enums.SeckillOrderStatus;
@@ -62,16 +61,27 @@ public class SeckillOrderDomainServiceImpl implements SeckillOrderDomainService 
     }
 
     @Override
-    public List<SeckillOrder> getSeckillOrderByActivityId(Long activityId) {
-        if (activityId == null){
-            throw new SeckillException(ErrorCode.PARAMS_INVALID);
+    public List<SeckillOrder> getSeckillOrderByGoodsId(Long goodsId)  {
+        if (goodsId == null){
+            throw  new SeckillException(ErrorCode.PARAMS_INVALID);
         }
-        return seckillOrderRepository.getSeckillOrderByActivityId(activityId);
+        return seckillOrderRepository.getSeckillOrderByGoodsId(goodsId);
     }
 
     @Override
-    public void deleteOrder(Long orderId) {
-        seckillOrderRepository.deleteOrder(orderId);
+    public void deleteOrderShardingUserId(Long orderId, Long userId) {
+        if (orderId == null || userId == null) {
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
+        }
+        seckillOrderRepository.deleteOrderShardingUserId(orderId, userId);
+    }
+
+    @Override
+    public void deleteOrderShardingGoodsId(Long orderId, Long goodsId) {
+        if (orderId == null || goodsId == null){
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
+        }
+        seckillOrderRepository.deleteOrderShardingGoodsId(orderId, goodsId);
     }
 
     /**

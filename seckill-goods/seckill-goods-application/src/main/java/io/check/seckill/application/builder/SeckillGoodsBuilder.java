@@ -2,7 +2,7 @@ package io.check.seckill.application.builder;
 
 import io.check.seckill.application.command.SeckillGoodsCommond;
 import io.check.seckill.common.builder.SeckillCommonBuilder;
-import io.check.seckill.common.model.dto.SeckillGoodsDTO;
+import io.check.seckill.common.model.dto.goods.SeckillGoodsDTO;
 import io.check.seckill.common.utils.beans.BeanUtil;
 import io.check.seckill.goods.domain.model.entity.SeckillGoods;
 

@@ -1,7 +1,8 @@
 package io.check.seckill.application.service;
 
 import io.check.seckill.application.command.SeckillGoodsCommond;
-import io.check.seckill.common.model.dto.SeckillGoodsDTO;
+import io.check.seckill.common.cache.model.SeckillBusinessCache;
+import io.check.seckill.common.model.dto.goods.SeckillGoodsDTO;
 import io.check.seckill.common.model.message.TxMessage;
 import io.check.seckill.goods.domain.model.entity.SeckillGoods;
 
@@ -60,4 +61,9 @@ public interface SeckillGoodsService {
      * 获取当前可用库存
      */
     Integer getAvailableStockById(Long id);
+
+    /**
+     * 获取商品可用库存
+     */
+    SeckillBusinessCache<Integer> getAvailableStock(Long goodsId, Long version);
 }

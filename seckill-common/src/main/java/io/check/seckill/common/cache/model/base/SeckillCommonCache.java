@@ -1,6 +1,9 @@
 package io.check.seckill.common.cache.model.base;
 
-public class SeckillCommonCache {
+import java.io.Serializable;
+
+public class SeckillCommonCache implements Serializable {
+    private static final long serialVersionUID = 2448735813082442223L;
 
     //缓存数据是否存在
     protected boolean exist;

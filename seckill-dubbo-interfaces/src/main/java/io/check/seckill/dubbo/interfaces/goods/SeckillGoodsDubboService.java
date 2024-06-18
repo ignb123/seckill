@@ -1,6 +1,7 @@
 package io.check.seckill.dubbo.interfaces.goods;
 
-import io.check.seckill.common.model.dto.SeckillGoodsDTO;
+import io.check.seckill.common.cache.model.SeckillBusinessCache;
+import io.check.seckill.common.model.dto.goods.SeckillGoodsDTO;
 
 /**
  * @author check
@@ -28,4 +29,9 @@ public interface SeckillGoodsDubboService {
      * 根据商品id获取可用库存
      */
     Integer getAvailableStockById(Long goodsId);
+
+    /**
+     * 获取商品的可用库存
+     */
+    SeckillBusinessCache<Integer> getAvailableStock(Long goodsId, Long version);
 }

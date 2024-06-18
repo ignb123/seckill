@@ -18,6 +18,7 @@ import io.check.seckill.stock.domain.service.SeckillStockBucketDomainService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
@@ -55,6 +56,9 @@ public class SeckillStockBucketArrangementServiceImpl implements SeckillStockBuc
 
     @Autowired
     private TransactionDefinition transactionDefinition;
+
+    @Value("${place.order.type:bucket}")
+    private String placeOrderType;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -174,12 +178,14 @@ public class SeckillStockBucketArrangementServiceImpl implements SeckillStockBuc
         if (!success){
             throw new SeckillException(ErrorCode.BUCKET_CREATE_FAILED);
         }
+        //清理缓存分桶库存
+        distributedCacheService.deleteKeyPrefix(SeckillConstants.GOODS_BUCKET_AVAILABLE_STOCKS_KEY);
+        //保存分桶库存
+        String stockBucketKey = SeckillConstants.getKey(SeckillConstants.GOODS_BUCKET_AVAILABLE_STOCKS_KEY, String.valueOf(goodsId));
         //保存每一项分桶库存到缓存
-        buckets.forEach(bucket -> {
-            distributedCacheService.put(SeckillConstants
-                    .getKey(SeckillConstants.getKey(SeckillConstants.GOODS_BUCKET_AVAILABLE_STOCKS_KEY, String.valueOf(goodsId)),
-                            String.valueOf(bucket.getSerialNo())), bucket.getAvailableStock());
-        });
+        buckets.forEach(bucket ->
+                distributedCacheService.put(SeckillConstants
+                        .getKey(stockBucketKey,String.valueOf(bucket.getSerialNo())), bucket.getAvailableStock()));
         //保存分桶数量到缓存
         distributedCacheService.put(SeckillConstants.getKey(SeckillConstants.GOODS_BUCKETS_QUANTITY_KEY, String.valueOf(goodsId)),
                 buckets.size());

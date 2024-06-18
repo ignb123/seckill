@@ -1,7 +1,7 @@
 package io.check.seckill.activity.application.dubbo;
 
 import io.check.seckill.activity.application.service.SeckillActivityService;
-import io.check.seckill.common.model.dto.SeckillActivityDTO;
+import io.check.seckill.common.model.dto.activity.SeckillActivityDTO;
 import io.check.seckill.dubbo.interfaces.activity.SeckillActivityDubboService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;

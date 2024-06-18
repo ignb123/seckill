@@ -11,7 +11,7 @@ import io.check.seckill.activity.domain.service.SeckillActivityDomainService;
 import io.check.seckill.common.cache.model.SeckillBusinessCache;
 import io.check.seckill.common.exception.ErrorCode;
 import io.check.seckill.common.exception.SeckillException;
-import io.check.seckill.common.model.dto.SeckillActivityDTO;
+import io.check.seckill.common.model.dto.activity.SeckillActivityDTO;
 import io.check.seckill.common.model.enums.SeckillActivityStatus;
 import io.check.seckill.common.utils.beans.BeanUtil;
 import io.check.seckill.common.utils.id.SnowFlakeFactory;

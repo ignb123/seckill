@@ -1,4 +1,4 @@
-package io.check.seckill.common.model.dto;
+package io.check.seckill.common.model.dto.order;
 
 
 /**

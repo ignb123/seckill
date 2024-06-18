@@ -1,6 +1,6 @@
 package io.check.seckill.dubbo.interfaces.activity;
 
-import io.check.seckill.common.model.dto.SeckillActivityDTO;
+import io.check.seckill.common.model.dto.activity.SeckillActivityDTO;
 
 /**
  * @author check

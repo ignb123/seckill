@@ -2,8 +2,7 @@ package io.check.seckill.order.application.place;
 
 import io.check.seckill.common.exception.ErrorCode;
 import io.check.seckill.common.exception.SeckillException;
-import io.check.seckill.common.model.dto.SeckillGoodsDTO;
-import io.check.seckill.common.model.enums.SeckillGoodsStatus;
+import io.check.seckill.common.model.dto.goods.SeckillGoodsDTO;
 import io.check.seckill.common.model.enums.SeckillOrderStatus;
 import io.check.seckill.common.model.message.TxMessage;
 import io.check.seckill.common.utils.beans.BeanUtil;
@@ -103,11 +102,12 @@ public interface SeckillPlaceOrderService {
      * 事务消息
      */
     default TxMessage getTxMessage(String destination, Long txNo, Long userId, String placeOrderType, Boolean exception,
-                                   SeckillOrderCommand seckillOrderCommand, SeckillGoodsDTO seckillGoods) {
+                                   SeckillOrderCommand seckillOrderCommand, SeckillGoodsDTO seckillGoods,
+                                   Integer bucketSerialNo, String orderTaskId) {
         //构建事务消息
         return new TxMessage(destination, txNo, seckillOrderCommand.getGoodsId(), seckillOrderCommand.getQuantity(),
                 seckillOrderCommand.getActivityId(), seckillOrderCommand.getVersion(), userId, seckillGoods.getGoodsName(),
-                seckillGoods.getActivityPrice(), placeOrderType, exception);
+                seckillGoods.getActivityPrice(), placeOrderType, exception, bucketSerialNo, orderTaskId);
     }
 
 }

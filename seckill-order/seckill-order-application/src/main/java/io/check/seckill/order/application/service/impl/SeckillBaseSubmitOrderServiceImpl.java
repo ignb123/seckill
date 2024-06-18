@@ -2,7 +2,7 @@ package io.check.seckill.order.application.service.impl;
 
 import io.check.seckill.common.exception.ErrorCode;
 import io.check.seckill.common.exception.SeckillException;
-import io.check.seckill.common.model.dto.SeckillGoodsDTO;
+import io.check.seckill.common.model.dto.goods.SeckillGoodsDTO;
 import io.check.seckill.dubbo.interfaces.goods.SeckillGoodsDubboService;
 import io.check.seckill.order.application.model.command.SeckillOrderCommand;
 import io.check.seckill.order.application.place.SeckillPlaceOrderService;

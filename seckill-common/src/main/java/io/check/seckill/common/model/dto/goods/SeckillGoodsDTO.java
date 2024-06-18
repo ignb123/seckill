@@ -1,4 +1,4 @@
-package io.check.seckill.common.model.dto;
+package io.check.seckill.common.model.dto.goods;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.check.seckill.common.model.enums.SeckillGoodsStatus;

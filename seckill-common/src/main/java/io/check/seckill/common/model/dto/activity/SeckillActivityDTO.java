@@ -1,4 +1,4 @@
-package io.check.seckill.common.model.dto;
+package io.check.seckill.common.model.dto.activity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;

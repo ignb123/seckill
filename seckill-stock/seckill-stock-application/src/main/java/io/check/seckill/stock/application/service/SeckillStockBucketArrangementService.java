@@ -14,7 +14,7 @@ public interface SeckillStockBucketArrangementService {
      * @param goodsId 商品id
      * @param stock 库存数量
      * @param bucketsQuantity 分桶数量
-     * @param assignmentMode 编排模式, 1:总量模式; 2:增量模式
+     * @param assignmentMode 编排模式
      */
     void arrangeStockBuckets(Long goodsId, Integer stock, Integer bucketsQuantity, Integer assignmentMode);
 

@@ -2,6 +2,8 @@ package io.check.seckill.order.application.service.impl;
 
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
 import io.check.seckill.common.cache.distribute.DistributedCacheService;
 import io.check.seckill.common.constants.SeckillConstants;
@@ -17,9 +19,11 @@ import io.check.seckill.order.domain.service.SeckillOrderDomainService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -42,6 +46,8 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
     @Autowired
     private DistributedCacheService distributedCacheService;
 
+    @Value("${place.order.type:bucket}")
+    private String placeOrderType;
 
     @Override
     public List<SeckillOrder> getSeckillOrderByUserId(Long userId) {
@@ -49,8 +55,8 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
     }
 
     @Override
-    public List<SeckillOrder> getSeckillOrderByActivityId(Long activityId) {
-        return seckillOrderDomainService.getSeckillOrderByActivityId(activityId);
+    public List<SeckillOrder> getSeckillOrderByGoodsId(Long goodsId) {
+        return seckillOrderDomainService.getSeckillOrderByGoodsId(goodsId);
     }
 
     @Override
@@ -63,7 +69,13 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
             logger.info("deleteOrder|订单微服务未执行本地事务|{}",errorMessage.getTxNo());
             return;
         }
-        seckillOrderDomainService.deleteOrder(errorMessage.getTxNo());
+        seckillOrderDomainService.deleteOrderShardingUserId(errorMessage.getTxNo(), errorMessage.getUserId());
+        seckillOrderDomainService.deleteOrderShardingGoodsId(errorMessage.getTxNo(), errorMessage.getGoodsId());
+        //清除掉幂等数据
+        if (!StrUtil.isEmpty(errorMessage.getOrderTaskId())){
+            distributedCacheService.delete(SeckillConstants.getKey(SeckillConstants.ORDER_TASK_ORDER_ID_KEY, errorMessage.getOrderTaskId()));
+            distributedCacheService.delete(SeckillConstants.getKey(SeckillConstants.ORDER_TASK_ID_KEY, errorMessage.getOrderTaskId()));
+        }
         this.handlerCacheStock(errorMessage);
     }
 
@@ -81,15 +93,67 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
                 logger.info("handlerCacheStock|已经执行过恢复缓存库存的方法|{}", JSONObject.toJSONString(errorMessage));
                 return;
             }
-            //只有分布式锁方式和Lua脚本方法才会扣减缓存中的库存
-            String key = SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_STOCK_KEY_PREFIX, String.valueOf(errorMessage.getGoodsId()));
-            //分布式锁方式
-            logger.info("handlerCacheStock|回滚缓存库存|{}", JSONObject.toJSONString(errorMessage));
-            if (SeckillConstants.PLACE_ORDER_TYPE_LOCK.equalsIgnoreCase(errorMessage.getPlaceOrderType())){
-                distributedCacheService.increment(key, errorMessage.getQuantity());
-            }else if (SeckillConstants.PLACE_ORDER_TYPE_LUA.equalsIgnoreCase(errorMessage.getPlaceOrderType())){  // Lua方式
-                distributedCacheService.incrementByLua(key, errorMessage.getQuantity());
+            //库存分桶
+            if (SeckillConstants.PLACE_ORDER_TYPE_BUCKET.equals(placeOrderType)){
+                this.rollbackBucketStock(errorMessage);
+            }else{
+                this.rollbackLockOrLuaStock(errorMessage);
             }
         }
+    }
+
+    /**
+     * 回滚bucket模式的库存
+     */
+    private void rollbackBucketStock(ErrorMessage errorMessage) {
+        //获取库存分桶数据key
+        String stockBucketKey = this.getStockBucketKey(errorMessage.getGoodsId(), errorMessage.getBucketSerialNo());
+        //获取库存编排时加锁的Key
+        String stockBucketSuspendKey = this.getStockBucketSuspendKey(errorMessage.getGoodsId());
+        //获取库存校对key
+        String stockBucketAlignKey = this.getStockBucketAlignKey(errorMessage.getGoodsId());
+        //封装执行Lua脚本的Key
+        List<String> keys = Arrays.asList(stockBucketKey, stockBucketSuspendKey, stockBucketAlignKey);
+        Long incrementResult = distributedCacheService.incrementBucketStock(keys, errorMessage.getQuantity());
+        if (incrementResult != SeckillConstants.LUA_BUCKET_STOCK_EXECUTE_SUCCESS){
+            logger.error("rollbackBucketStock|恢复预扣减的库存失败|{}", JSONUtil.toJsonStr(errorMessage));
+        }
+    }
+
+    /**
+     * 获取库存校对key
+     */
+    private String getStockBucketAlignKey(Long goodsId){
+        return SeckillConstants.getKey(SeckillConstants.GOODS_STOCK_BUCKETS_ALIGN_KEY, String.valueOf(goodsId));
+    }
+
+    /**
+     * 获取库存编排时加锁的Key
+     */
+    private String getStockBucketSuspendKey(Long goodsId){
+        return SeckillConstants.getKey(SeckillConstants.GOODS_STOCK_BUCKETS_SUSPEND_KEY, String.valueOf(goodsId));
+    }
+
+    /**
+     * 获取库存分桶数据Key
+     */
+    private String getStockBucketKey(Long goodsId, Integer serialNo){
+        return SeckillConstants.getKey(SeckillConstants.getKey(SeckillConstants.GOODS_BUCKET_AVAILABLE_STOCKS_KEY, String.valueOf(goodsId)),String.valueOf(serialNo));
+    }
+
+    /**
+     * 回滚Lock和Lua模式的库存
+     */
+    private void rollbackLockOrLuaStock(ErrorMessage errorMessage) {
+        //只有分布式锁方式和Lua脚本方法才会扣减缓存中的库存
+        String key = SeckillConstants.getKey(SeckillConstants.GOODS_ITEM_STOCK_KEY_PREFIX, String.valueOf(errorMessage.getGoodsId()));
+        //分布式锁方式
+        logger.info("handlerCacheStock|回滚缓存库存|{}", JSONObject.toJSONString(errorMessage));
+        if (SeckillConstants.PLACE_ORDER_TYPE_LOCK.equalsIgnoreCase(errorMessage.getPlaceOrderType())){
+            distributedCacheService.increment(key, errorMessage.getQuantity());
+        }else if (SeckillConstants.PLACE_ORDER_TYPE_LUA.equalsIgnoreCase(errorMessage.getPlaceOrderType())){  // Lua方式
+            distributedCacheService.incrementByLua(key, errorMessage.getQuantity());
+        }
+
     }
 }

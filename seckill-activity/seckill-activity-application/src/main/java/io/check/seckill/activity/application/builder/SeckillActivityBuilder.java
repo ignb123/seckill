@@ -3,7 +3,7 @@ package io.check.seckill.activity.application.builder;
 import io.check.seckill.activity.application.command.SeckillActivityCommand;
 import io.check.seckill.activity.domain.model.entity.SeckillActivity;
 import io.check.seckill.common.builder.SeckillCommonBuilder;
-import io.check.seckill.common.model.dto.SeckillActivityDTO;
+import io.check.seckill.common.model.dto.activity.SeckillActivityDTO;
 import io.check.seckill.common.utils.beans.BeanUtil;
 
 /**

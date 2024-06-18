@@ -4,7 +4,7 @@ import io.check.seckill.common.cache.distribute.DistributedCacheService;
 import io.check.seckill.common.constants.SeckillConstants;
 import io.check.seckill.common.exception.ErrorCode;
 import io.check.seckill.common.exception.SeckillException;
-import io.check.seckill.common.model.dto.SeckillOrderSubmitDTO;
+import io.check.seckill.common.model.dto.order.SeckillOrderSubmitDTO;
 import io.check.seckill.order.application.model.command.SeckillOrderCommand;
 import io.check.seckill.order.application.model.task.SeckillOrderTask;
 import io.check.seckill.order.application.service.OrderTaskGenerateService;
@@ -37,6 +37,8 @@ public class SeckillAsyncSubmitOrderServiceImpl extends SeckillBaseSubmitOrderSe
         this.checkSeckillOrder(userId, seckillOrderCommand);
         //生成订单任务id
         String orderTaskId = orderTaskGenerateService.generatePlaceOrderTaskId(userId, seckillOrderCommand.getGoodsId());
+        //将taskId存入seckillOrderCommand
+        seckillOrderCommand.setOrderTaskId(orderTaskId);
         //构造下单任务
         SeckillOrderTask seckillOrderTask = new SeckillOrderTask(SeckillConstants.TOPIC_ORDER_MSG, orderTaskId, userId, seckillOrderCommand);
         //提交订单

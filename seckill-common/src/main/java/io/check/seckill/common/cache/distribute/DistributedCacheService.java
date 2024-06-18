@@ -15,6 +15,7 @@ public interface DistributedCacheService {
     String getString(String key);
     <T> List<T> getList(String key, Class<T> targetClass);
     Boolean delete(String key);
+    Boolean deleteKeyPrefix(String prefix);
     Boolean hasKey(String key);
 
     Long addSet(String key, Object... values);
@@ -86,5 +87,20 @@ public interface DistributedCacheService {
     default Long recoverOrderToken(String key){
         return null;
     }
+
+    /**
+     * 扣减分桶库存
+     */
+    default Long decrementBucketStock(List<String> keys, Integer quantity){
+        return null;
+    }
+
+    /**
+     * 恢复分桶库存
+     */
+    default Long incrementBucketStock(List<String> keys, Integer quantity){
+        return null;
+    }
+
 
 }

@@ -18,6 +18,8 @@ public class SeckillOrderCommand implements Serializable {
     private Long activityId;
     //商品版本号
     private Long version;
+    //订单任务id
+    private String orderTaskId = "";
 
     public Long getGoodsId() {
         return goodsId;
@@ -50,4 +52,13 @@ public class SeckillOrderCommand implements Serializable {
     public void setVersion(Long version) {
         this.version = version;
     }
+
+    public String getOrderTaskId() {
+        return orderTaskId;
+    }
+
+    public void setOrderTaskId(String orderTaskId) {
+        this.orderTaskId = orderTaskId;
+    }
+
 }
