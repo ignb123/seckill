@@ -6,11 +6,9 @@ import io.check.seckill.reservation.domain.model.entity.SeckillReservationUser;
 import java.util.List;
 
 /**
- * @author binghe(微信 : hacker_binghe)
+ * @author check
  * @version 1.0.0
  * @description SeckillReservationDomainService
- * @github https://github.com/binghe001
- * @copyright 公众号: 冰河技术
  */
 public interface SeckillReservationDomainService {
 
@@ -28,6 +26,11 @@ public interface SeckillReservationDomainService {
      * 更新配置状态
      */
     boolean updateConfigStatus(Integer status, Long goodsId);
+
+    /**
+     * 更新当前预约人数
+     */
+    int updateReserveCurrentUserCount(Integer reserveCurrentUserCount, Long goodsId);
 
     /**
      * 获取配置列表
@@ -64,4 +67,3 @@ public interface SeckillReservationDomainService {
      */
     SeckillReservationUser getSeckillReservationUser(Long userId, Long goodsId, Integer status);
 }
-

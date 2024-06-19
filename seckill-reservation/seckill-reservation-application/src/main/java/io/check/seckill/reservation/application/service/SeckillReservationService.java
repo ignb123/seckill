@@ -63,6 +63,4 @@ public interface SeckillReservationService {
      * 获取用户预约的某个商品信息
      */
     SeckillReservationUser getSeckillReservationUser(SeckillReservationUserCommand seckillReservationUserCommand);
-
 }
-

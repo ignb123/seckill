@@ -5,7 +5,6 @@ import io.check.seckill.common.utils.beans.BeanUtil;
 import io.check.seckill.reservation.application.command.SeckillReservationUserCommand;
 import io.check.seckill.reservation.domain.model.entity.SeckillReservationUser;
 
-
 /**
  * @author check
  * @version 1.0.0
@@ -21,5 +20,4 @@ public class SeckillReservationUserBuilder extends SeckillCommonBuilder {
         BeanUtil.copyProperties(seckillReservationUserCommand, seckillReservationUser);
         return seckillReservationUser;
     }
-
 }

@@ -1,6 +1,7 @@
 package io.check.seckill.activity.controller;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.check.seckill.activity.application.command.SeckillActivityCommand;
 import io.check.seckill.activity.application.service.SeckillActivityService;
 import io.check.seckill.activity.domain.model.entity.SeckillActivity;
@@ -97,7 +98,7 @@ public class SeckillActivityController /*extends BaseController*/ {
      */
     @RequestMapping(value = "/updateStatus", method = {RequestMethod.GET,RequestMethod.POST})
     public ResponseMessage<String> updateStatus(@RequestParam(value = "status", required = false) Integer status,
-                                                @RequestParam(value = "id", required = false) Long id){
+                                                @RequestParam(value = "id", required = false) @JsonFormat(shape = JsonFormat.Shape.STRING) Long id){
         seckillActivityService.updateStatus(status, id);
         return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode());
     }

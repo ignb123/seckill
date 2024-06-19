@@ -5,6 +5,7 @@ import com.alibaba.cola.event.EventHandler;
 import com.alibaba.cola.event.EventHandlerI;
 import com.alibaba.fastjson.JSON;
 import io.check.seckill.common.model.enums.SeckillReservationUserStatus;
+import io.check.seckill.reservation.application.cache.SeckillReservationConfigCacheService;
 import io.check.seckill.reservation.application.cache.SeckillReservationUserCacheService;
 import io.check.seckill.reservation.domain.event.SeckillReservationUserEvent;
 import org.slf4j.Logger;
@@ -23,6 +24,8 @@ public class SeckillReservationUserColaEventHandler implements EventHandlerI<Res
     private final Logger logger = LoggerFactory.getLogger(SeckillReservationUserColaEventHandler.class);
     @Autowired
     private SeckillReservationUserCacheService seckillReservationUserCacheService;
+    @Autowired
+    private SeckillReservationConfigCacheService seckillReservationConfigCacheService;
     @Override
     public Response execute(SeckillReservationUserEvent seckillReservationUserEvent) {
         if (seckillReservationUserEvent == null || seckillReservationUserEvent.getId() == null || seckillReservationUserEvent.getGoodsId() == null){
@@ -40,6 +43,7 @@ public class SeckillReservationUserColaEventHandler implements EventHandlerI<Res
             seckillReservationUserCacheService.tryUpdateGoodsListCacheByUserId(seckillReservationUserEvent.getId(), false);
             seckillReservationUserCacheService.tryUpdatetUserListCacheByGoodsId(seckillReservationUserEvent.getGoodsId(), false);
         }
+        seckillReservationConfigCacheService.updateSeckillReservationConfigCurrentUserCount(seckillReservationUserEvent.getGoodsId(), seckillReservationUserEvent.getStatus(), 0L);
         return Response.buildSuccess();
     }
 }

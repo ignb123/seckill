@@ -19,6 +19,11 @@ public interface SeckillReservationConfigCacheService extends SeckillCacheServic
     SeckillBusinessCache<SeckillReservationConfig> getSeckillReservationConfig(Long goodsId, Long version);
 
     /**
+     * 更新预约人数
+     */
+    SeckillBusinessCache<SeckillReservationConfig> updateSeckillReservationConfigCurrentUserCount(Long goodsId, Integer status, Long version);
+
+    /**
      * 更新商品预约配置缓存
      */
     SeckillBusinessCache<SeckillReservationConfig> tryUpdateSeckillReservationConfigCacheByLock(Long goodsId, boolean doubleCheck);
@@ -32,5 +37,5 @@ public interface SeckillReservationConfigCacheService extends SeckillCacheServic
      * 更新预约配置列表
      */
     SeckillBusinessCache<List<SeckillReservationConfig>> tryUpdateSeckillReservationConfigListCacheByLock(boolean doubleCheck);
-}
 
+}

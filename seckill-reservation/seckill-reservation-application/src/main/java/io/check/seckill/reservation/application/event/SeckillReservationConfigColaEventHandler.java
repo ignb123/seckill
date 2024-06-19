@@ -36,4 +36,3 @@ public class SeckillReservationConfigColaEventHandler implements EventHandlerI<R
         return Response.buildSuccess();
     }
 }
-

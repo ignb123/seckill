@@ -49,4 +49,3 @@ public interface SeckillReservationUserCacheService extends SeckillCacheService 
      */
     void deleteSeckillReservationUserFromCache(SeckillReservationUserEvent seckillReservationUserEvent);
 }
-

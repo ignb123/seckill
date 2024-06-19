@@ -66,6 +66,7 @@ public class SeckillPlaceOrderLockService implements SeckillPlaceOrderService {
         boolean isDecrementCacheStock = false;
         boolean exception = false;
         long txNo = SnowFlakeFactory.getSnowFlakeFromCache().nextId();
+        Long result = 0L;
         try {
             //未获取到分布式锁
             if (!lock.tryLock(2, 5, TimeUnit.SECONDS)){
@@ -78,7 +79,7 @@ public class SeckillPlaceOrderLockService implements SeckillPlaceOrderService {
                 throw new SeckillException(ErrorCode.STOCK_LT_ZERO);
             }
             //扣减缓存库存
-            Long result = distributedCacheService.decrement(key, seckillOrderCommand.getQuantity());
+            result = distributedCacheService.decrement(key, seckillOrderCommand.getQuantity());
             if (result < 0){
                 throw new SeckillException(ErrorCode.STOCK_LT_ZERO);
             }
@@ -86,8 +87,8 @@ public class SeckillPlaceOrderLockService implements SeckillPlaceOrderService {
             isDecrementCacheStock = true;
 
         } catch (Exception e) {
-            //已经扣减了缓存中的库存，则需要增加回来
-            if (isDecrementCacheStock){
+            //已经扣减了缓存中的库存，或者扣减存库存后，结果为负数，则需要增加回来
+            if (isDecrementCacheStock || result < 0){
                 distributedCacheService.increment(key, seckillOrderCommand.getQuantity());
             }
             if (e instanceof InterruptedException){

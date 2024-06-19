@@ -73,7 +73,7 @@ public class SeckillGoodsDTO implements Serializable {
 
     public boolean isInSeckilling(){
         Date currentDate = new Date();
-        return startTime.before(currentDate) && endTime.after(currentDate);
+        return startTime.after(currentDate) && endTime.after(startTime);
     }
 
     public Integer getLimitNum() {

@@ -4,6 +4,7 @@ import io.check.seckill.common.exception.ErrorCode;
 import io.check.seckill.common.exception.SeckillException;
 import io.check.seckill.common.model.dto.goods.SeckillGoodsDTO;
 import io.check.seckill.dubbo.interfaces.goods.SeckillGoodsDubboService;
+import io.check.seckill.dubbo.interfaces.reservation.SeckillReservationDubboService;
 import io.check.seckill.order.application.model.command.SeckillOrderCommand;
 import io.check.seckill.order.application.place.SeckillPlaceOrderService;
 import io.check.seckill.order.application.security.SecurityService;
@@ -29,6 +30,9 @@ public abstract class SeckillBaseSubmitOrderServiceImpl implements SeckillSubmit
     @Resource
     protected SeckillPlaceOrderService seckillPlaceOrderService;
 
+    @DubboReference(version = "1.0.0", check = false)
+    private SeckillReservationDubboService seckillReservationDubboService;
+
     @Override
     public void checkSeckillOrder(Long userId, SeckillOrderCommand seckillOrderCommand){
         if (userId == null || seckillOrderCommand == null){
@@ -44,5 +48,9 @@ public abstract class SeckillBaseSubmitOrderServiceImpl implements SeckillSubmit
                 .getSeckillGoods(seckillOrderCommand.getGoodsId(), seckillOrderCommand.getVersion());
         //检测商品信息
         seckillPlaceOrderService.checkSeckillGoods(seckillOrderCommand, seckillGoods);
+        //通过预约服务检测是否可以正常下单
+        if (!seckillReservationDubboService.checkReservation(userId, seckillOrderCommand.getGoodsId())){
+            throw new SeckillException(ErrorCode.GOODS_RESERVATION_NOT_RESERVE);
+        }
     }
 }

@@ -1,6 +1,5 @@
 package io.check.seckill.reservation.domain.event;
 
-
 import com.alibaba.fastjson.annotation.JSONField;
 import io.check.seckill.common.model.event.SeckillBaseEvent;
 

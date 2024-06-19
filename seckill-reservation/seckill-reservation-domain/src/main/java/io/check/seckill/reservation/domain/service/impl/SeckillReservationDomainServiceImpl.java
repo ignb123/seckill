@@ -18,16 +18,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * @author check
  * @version 1.0.0
+ * @description SeckillReservationDomainServiceImpl
  */
 @Service
 public class SeckillReservationDomainServiceImpl implements SeckillReservationDomainService {
     private static final Logger logger = LoggerFactory.getLogger(SeckillReservationDomainServiceImpl.class);
-    @Autowired
+    @Resource
     private SeckillReservationRepository seckillReservationRepository;
     @Autowired
     private MessageSenderService messageSenderService;
@@ -41,10 +43,9 @@ public class SeckillReservationDomainServiceImpl implements SeckillReservationDo
         }
         logger.info("saveSeckillReservationConfig|添加商品预约配置|{}", JSON.toJSONString(seckillReservationConfig));
         boolean success = seckillReservationRepository.saveSeckillReservationConfig(seckillReservationConfig);
-        if(success){
+        if (success){
             logger.info("saveSeckillReservationConfig|添加商品预约配置|{}", JSON.toJSONString(seckillReservationConfig));
-            SeckillReservationConfigEvent seckillReservationConfigEvent = new SeckillReservationConfigEvent(seckillReservationConfig.getGoodsId(),
-                    seckillReservationConfig.getStatus(), this.getConfigTopicEvent());
+            SeckillReservationConfigEvent seckillReservationConfigEvent = new SeckillReservationConfigEvent(seckillReservationConfig.getGoodsId(), seckillReservationConfig.getStatus(), this.getConfigTopicEvent());
             messageSenderService.send(seckillReservationConfigEvent);
         }
         return success;
@@ -57,10 +58,9 @@ public class SeckillReservationDomainServiceImpl implements SeckillReservationDo
         }
         logger.info("updateSeckillReservationConfig|更新商品预约配置|{}", JSON.toJSONString(seckillReservationConfig));
         boolean success = seckillReservationRepository.updateSeckillReservationConfig(seckillReservationConfig);
-        if(success){
+        if (success){
             logger.info("updateSeckillReservationConfig|更新商品预约配置成功|{}", JSON.toJSONString(seckillReservationConfig));
-            SeckillReservationConfigEvent seckillReservationConfigEvent = new SeckillReservationConfigEvent(seckillReservationConfig.getGoodsId(),
-                    seckillReservationConfig.getStatus(), this.getConfigTopicEvent());
+            SeckillReservationConfigEvent seckillReservationConfigEvent = new SeckillReservationConfigEvent(seckillReservationConfig.getGoodsId(), seckillReservationConfig.getStatus(), this.getConfigTopicEvent());
             messageSenderService.send(seckillReservationConfigEvent);
         }
         return success;
@@ -79,6 +79,14 @@ public class SeckillReservationDomainServiceImpl implements SeckillReservationDo
             messageSenderService.send(seckillReservationConfigEvent);
         }
         return success;
+    }
+
+    @Override
+    public int updateReserveCurrentUserCount(Integer reserveCurrentUserCount, Long goodsId) {
+        if (reserveCurrentUserCount == null || goodsId == null){
+            throw new SeckillException(ErrorCode.PARAMS_INVALID);
+        }
+        return seckillReservationRepository.updateReserveCurrentUserCount(reserveCurrentUserCount, goodsId);
     }
 
     @Override
@@ -119,8 +127,7 @@ public class SeckillReservationDomainServiceImpl implements SeckillReservationDo
         boolean success = seckillReservationRepository.reserveGoods(seckillReservationUser);
         if (success){
             logger.info("reserveGoods|预约秒杀商品成功|{}", JSON.toJSONString(seckillReservationUser));
-            SeckillReservationUserEvent seckillReservationUserEvent = new SeckillReservationUserEvent(seckillReservationUser.getUserId(),
-                    seckillReservationUser.getGoodsId(), SeckillReservationUserStatus.NORMAL.getCode(), this.getUserTopicEvent());
+            SeckillReservationUserEvent seckillReservationUserEvent = new SeckillReservationUserEvent(seckillReservationUser.getUserId(), seckillReservationUser.getGoodsId(), SeckillReservationUserStatus.NORMAL.getCode(), this.getUserTopicEvent());
             messageSenderService.send(seckillReservationUserEvent);
         }
         return success;
@@ -153,14 +160,12 @@ public class SeckillReservationDomainServiceImpl implements SeckillReservationDo
      * 获取预约配置主题事件
      */
     private String getConfigTopicEvent(){
-        return SeckillConstants.EVENT_PUBLISH_TYPE_ROCKETMQ.equals(eventType) ?
-                SeckillConstants.TOPIC_EVENT_ROCKETMQ_RESERVATION_CONFIG : SeckillConstants.TOPIC_EVENT_COLA;
+        return SeckillConstants.EVENT_PUBLISH_TYPE_ROCKETMQ.equals(eventType) ? SeckillConstants.TOPIC_EVENT_ROCKETMQ_RESERVATION_CONFIG : SeckillConstants.TOPIC_EVENT_COLA;
     }
     /**
      * 获取预约记录主题事件
      */
     private String getUserTopicEvent(){
-        return SeckillConstants.EVENT_PUBLISH_TYPE_ROCKETMQ.equals(eventType) ?
-                SeckillConstants.TOPIC_EVENT_ROCKETMQ_RESERVATION_USER : SeckillConstants.TOPIC_EVENT_COLA;
+        return SeckillConstants.EVENT_PUBLISH_TYPE_ROCKETMQ.equals(eventType) ? SeckillConstants.TOPIC_EVENT_ROCKETMQ_RESERVATION_USER : SeckillConstants.TOPIC_EVENT_COLA;
     }
 }

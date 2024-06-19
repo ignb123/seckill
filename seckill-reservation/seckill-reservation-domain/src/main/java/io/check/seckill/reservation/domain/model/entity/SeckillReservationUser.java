@@ -33,11 +33,11 @@ public class SeckillReservationUser implements Serializable {
 
     public boolean isEmpty(){
         return id == null
-                || reserveConfigId == null
-                || goodsId == null
-                || StrUtil.isEmpty(goodsName)
-                || userId == null
-                || reserveTime == null;
+               || reserveConfigId == null
+               || goodsId == null
+               || StrUtil.isEmpty(goodsName)
+               || userId == null
+               || reserveTime == null;
     }
 
     public Long getId() {

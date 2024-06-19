@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -34,44 +35,29 @@ import java.util.concurrent.locks.ReentrantLock;
 @Service
 public class SeckillReservationUserCacheServiceImpl implements SeckillReservationUserCacheService {
     private final static Logger logger = LoggerFactory.getLogger(SeckillReservationUserCacheServiceImpl.class);
-
     //存储预约信息
-    private static final Cache<String, SeckillBusinessCache<SeckillReservationUser>> localSeckillReservationUserCacheService =
-            LocalCacheFactory.getLocalCache();
-
+    private static final Cache<String, SeckillBusinessCache<SeckillReservationUser>> localSeckillReservationUserCacheService = LocalCacheFactory.getLocalCache();
     //存储用户维度预约列表
-    private static final Cache<Long, SeckillBusinessCache<List<SeckillReservationUser>>> localSeckillReservationUserListCacheService =
-            LocalCacheFactory.getLocalCache();
-
+    private static final Cache<Long, SeckillBusinessCache<List<SeckillReservationUser>>> localSeckillReservationUserListCacheService = LocalCacheFactory.getLocalCache();
     //存储商品维度预约列表
-    private static final Cache<Long, SeckillBusinessCache<List<SeckillReservationUser>>> localSeckillReservationGoodsListCacheService =
-            LocalCacheFactory.getLocalCache();
-
+    private static final Cache<Long, SeckillBusinessCache<List<SeckillReservationUser>>> localSeckillReservationGoodsListCacheService = LocalCacheFactory.getLocalCache();
     //更新预约时获取分布式锁使用
     private static final String SECKILL_RESERVATION_USER_UPDATE_CACHE_LOCK_KEY = "SECKILL_RESERVATION_USER_UPDATE_CACHE_LOCK_KEY_";
-
     //更新用户维度预约列表时获取分布式锁使用
     private static final String SECKILL_RESERVATION_USER_LIST_UPDATE_CACHE_LOCK_KEY = "SECKILL_RESERVATION_USER_LIST_UPDATE_CACHE_LOCK_KEY_";
-
     //更新商品维度预约列表时获取分布式锁使用
     private static final String SECKILL_RESERVATION_GOODS_LIST_UPDATE_CACHE_LOCK_KEY = "SECKILL_RESERVATION_GOODS_LIST_UPDATE_CACHE_LOCK_KEY_";
-
     //本地可重入锁
     private final Lock localCacheUpdatelock = new ReentrantLock();
-
     //本地用户维度列表可重入锁
     private final Lock localCacheUserListUpdatelock = new ReentrantLock();
-
     //本地商品维度列表可重入锁
     private final Lock localCacheGoodsListUpdatelock = new ReentrantLock();
-
-    @Autowired
+    @Resource
     private DistributedCacheService distributedCacheService;
-
-    @Autowired
+    @Resource
     private SeckillReservationDomainService seckillReservationDomainService;
-
-    @Autowired
+    @Resource
     private DistributedLockFactory distributedLockFactory;
 
     @Override
@@ -127,7 +113,6 @@ public class SeckillReservationUserCacheServiceImpl implements SeckillReservatio
         return seckillReservationUserCache;
     }
 
-
     @Override
     public SeckillBusinessCache<SeckillReservationUser> tryUpdateSeckillReservationUserCacheByUserIdAndGoodsId(Long userId, Long goodsId, boolean doubleCheck) {
         logger.info("SeckillReservationUserCache|更新分布式缓存|{}|{}", userId, goodsId);
@@ -156,7 +141,7 @@ public class SeckillReservationUserCacheServiceImpl implements SeckillReservatio
                 seckillReservationUserCache = new SeckillBusinessCache<SeckillReservationUser>().with(seckillReservationUser).withVersion(SystemClock.millisClock().now());
             }
             //将数据保存到分布式缓存
-            distributedCacheService.put(distributeKey, JSON.toJSONString(seckillReservationUserCache), SeckillConstants.FIVE_MINUTES);
+            distributedCacheService.put(distributeKey, JSON.toJSONString(seckillReservationUserCache), SeckillConstants.HOURS_24);
             logger.info("SeckillReservationUserCache|分布式缓存已经更新|{}|{}", userId, goodsId);
             return seckillReservationUserCache;
         } catch (InterruptedException e) {
@@ -245,7 +230,7 @@ public class SeckillReservationUserCacheServiceImpl implements SeckillReservatio
                 seckillReservationUserListCache = new SeckillBusinessCache<List<SeckillReservationUser>>().with(seckillReservationUserList).withVersion(SystemClock.millisClock().now());
             }
             //将数据保存到分布式缓存
-            distributedCacheService.put(distributeKey, JSON.toJSONString(seckillReservationUserListCache), SeckillConstants.FIVE_MINUTES);
+            distributedCacheService.put(distributeKey, JSON.toJSONString(seckillReservationUserListCache), SeckillConstants.HOURS_24);
             logger.info("SeckillReservationUserListCache|分布式缓存已经更新|{}", goodsId);
             return seckillReservationUserListCache;
         } catch (InterruptedException e) {
@@ -306,6 +291,7 @@ public class SeckillReservationUserCacheServiceImpl implements SeckillReservatio
         }
         return seckillReservationUserListCache;
     }
+
     @Override
     public SeckillBusinessCache<List<SeckillReservationUser>> tryUpdateGoodsListCacheByUserId(Long userId, boolean doubleCheck) {
         logger.info("SeckillReservationGoodsListCache|更新分布式缓存|{}", userId);
@@ -333,7 +319,7 @@ public class SeckillReservationUserCacheServiceImpl implements SeckillReservatio
                 seckillReservationUserListCache = new SeckillBusinessCache<List<SeckillReservationUser>>().with(seckillReservationUserList).withVersion(SystemClock.millisClock().now());
             }
             //将数据保存到分布式缓存
-            distributedCacheService.put(distributeKey, JSON.toJSONString(seckillReservationUserListCache), SeckillConstants.FIVE_MINUTES);
+            distributedCacheService.put(distributeKey, JSON.toJSONString(seckillReservationUserListCache), SeckillConstants.HOURS_24);
             logger.info("SeckillReservationGoodsListCache|分布式缓存已经更新|{}", userId);
             return seckillReservationUserListCache;
         } catch (InterruptedException e) {
@@ -359,6 +345,6 @@ public class SeckillReservationUserCacheServiceImpl implements SeckillReservatio
         localSeckillReservationGoodsListCacheService.invalidate(seckillReservationUserEvent.getId());
         distributeKey = StringUtil.append(SeckillConstants.SECKILL_RESERVATION_USER_LIST_CACHE_KEY, seckillReservationUserEvent.getId());
         distributedCacheService.delete(distributeKey);
-
     }
+
 }

@@ -49,4 +49,3 @@ public class SeckillReservationConfigRocketMQEventHandler implements RocketMQLis
         return JSONObject.parseObject(eventStr, SeckillReservationConfigEvent.class);
     }
 }
-

@@ -25,4 +25,3 @@ public class SeckillReservationUserEvent extends SeckillBaseEvent {
         this.goodsId = goodsId;
     }
 }
-

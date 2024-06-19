@@ -50,19 +50,19 @@ public class SeckillReservationConfig implements Serializable {
 
     public boolean isEmpty(){
         return this.id == null
-                || this.goodsId == null
-                || StrUtil.isEmpty(goodsName)
-                || this.reserveMaxUserCount == null
-                || this.reserveMaxUserCount <= 0
-                || this.reserveCurrentUserCount == null
-                || this.reserveCurrentUserCount < 0
-                || this.reserveMaxUserCount < this.reserveCurrentUserCount
-                || this.reserveStartTime == null
-                || this.reserveEndTime == null
-                || this.reserveStartTime.after(this.reserveEndTime)
-                || this.seckillStartTime == null
-                || this.seckillEndTime == null
-                || this.seckillStartTime.after(this.seckillEndTime);
+        || this.goodsId == null
+        || StrUtil.isEmpty(goodsName)
+        || this.reserveMaxUserCount == null
+        || this.reserveMaxUserCount <= 0
+        || this.reserveCurrentUserCount == null
+        || this.reserveCurrentUserCount < 0
+        || this.reserveMaxUserCount < this.reserveCurrentUserCount
+        || this.reserveStartTime == null
+        || this.reserveEndTime == null
+        || this.reserveStartTime.after(this.reserveEndTime)
+        || this.seckillStartTime == null
+        || this.seckillEndTime == null
+        || this.seckillStartTime.after(this.seckillEndTime);
     }
 
     public Long getId() {
