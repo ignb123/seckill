@@ -1,4 +1,4 @@
-package io.check.seckill.common.interceptor;
+package io.check.seckill.common.interceptor.auth;
 
 import io.check.seckill.common.constants.SeckillConstants;
 import io.check.seckill.common.exception.ErrorCode;

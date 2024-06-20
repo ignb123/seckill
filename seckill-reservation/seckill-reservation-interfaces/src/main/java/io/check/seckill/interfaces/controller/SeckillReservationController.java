@@ -1,5 +1,6 @@
 package io.check.seckill.interfaces.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import io.check.seckill.common.exception.ErrorCode;
 import io.check.seckill.common.response.ResponseMessage;
 import io.check.seckill.common.response.ResponseMessageBuilder;
@@ -97,6 +98,7 @@ public class SeckillReservationController {
      * 预约秒杀商品
      */
     @RequestMapping(value = "/user/reserveGoods", method = {RequestMethod.GET,RequestMethod.POST})
+    @SentinelResource(value = "SAVE-DATA-FLOW")
     public ResponseMessage<String> reserveGoods(@RequestBody SeckillReservationUserCommand seckillReservationUserCommand){
         seckillReservationService.reserveGoods(seckillReservationUserCommand);
         return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode());
@@ -105,6 +107,7 @@ public class SeckillReservationController {
      * 取消预约秒杀商品
      */
     @RequestMapping(value = "/user/cancelReserveGoods", method = {RequestMethod.GET,RequestMethod.POST})
+    @SentinelResource(value = "SAVE-DATA-FLOW")
     public ResponseMessage<String> cancelReserveGoods(@RequestBody SeckillReservationUserCommand seckillReservationUserCommand){
         seckillReservationService.cancelReserveGoods(seckillReservationUserCommand);
         return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode());

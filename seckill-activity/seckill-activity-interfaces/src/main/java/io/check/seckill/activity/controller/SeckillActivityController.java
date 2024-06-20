@@ -1,6 +1,7 @@
 package io.check.seckill.activity.controller;
 
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.check.seckill.activity.application.command.SeckillActivityCommand;
 import io.check.seckill.activity.application.service.SeckillActivityService;
@@ -60,6 +61,7 @@ public class SeckillActivityController /*extends BaseController*/ {
      * 获取秒杀活动列表
      */
     @RequestMapping(value = "/seckillActivityList", method = {RequestMethod.GET,RequestMethod.POST})
+    @SentinelResource(value = "QUEUE-DATA-FLOW")
     public ResponseMessage<List<SeckillActivityDTO>> getSeckillActivityList(@RequestParam(value = "status", required = false) Integer status,
                                                                             @RequestParam(value = "version", required = false) Long version){
         return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode(), seckillActivityService.getSeckillActivityList(status, version));
@@ -80,6 +82,7 @@ public class SeckillActivityController /*extends BaseController*/ {
      * 获取id获取秒杀活动详情
      */
     @RequestMapping(value = "/seckillActivity", method = {RequestMethod.GET,RequestMethod.POST})
+    @SentinelResource(value = "QUEUE-DATA-FLOW")
     public ResponseMessage<SeckillActivityDTO> getSeckillActivityById(@RequestParam(value = "id", required = false) Long id,
                                                                       @RequestParam(value = "version", required = false) Long version){
         return ResponseMessageBuilder.build(ErrorCode.SUCCESS.getCode(), seckillActivityService.getSeckillActivity(id, version));

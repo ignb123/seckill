@@ -5,6 +5,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Import({RedisConfig.class,})
 @EnableTransactionManagement(proxyTargetClass = true)
 @ServletComponentScan(basePackages = {"io.check.seckill"})
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class TransactionConfig {
 
 }

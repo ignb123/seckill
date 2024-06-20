@@ -1,7 +1,7 @@
 package io.check.seckill.common.interceptor.config;
 
 
-import io.check.seckill.common.interceptor.AuthInterceptor;
+import io.check.seckill.common.interceptor.auth.AuthInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

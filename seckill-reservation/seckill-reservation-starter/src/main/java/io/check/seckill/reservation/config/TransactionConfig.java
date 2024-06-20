@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement(proxyTargetClass = true)
 @Import({RedisConfig.class})
 @ServletComponentScan(basePackages = {"io.check.seckill"})
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class TransactionConfig {
 }
 
